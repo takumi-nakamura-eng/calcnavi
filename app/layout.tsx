@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Nav from './components/Nav';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body>
         <Nav />
         {children}
+        <GoogleAnalytics gaId="G-Q6PTFR8RMG" />
       </body>
     </html>
   );
