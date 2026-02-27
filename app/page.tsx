@@ -8,15 +8,8 @@ export const metadata: Metadata = {
     '設計・施工・暮らしに役立つ計算ツールと解説をまとめたサイト。住宅ローン・ボルト計算など無料でご利用いただけます。',
 };
 
-const CATEGORIES = [
-  { icon: '🏠', name: '住宅・金融', count: '1ツール', href: '/loan' },
-  { icon: '🔩', name: 'ボルト・ナット', count: '1解説', href: '/articles' },
-  { icon: '📐', name: '構造・梁', count: '準備中', href: '/tools' },
-  { icon: '📏', name: '単位換算', count: '準備中', href: '/tools' },
-];
-
 const POPULAR = [
-  { title: '住宅ローン計算機', desc: '月々の返済額・総返済額・総利息を試算', href: '/loan' },
+  { title: '住宅ローン計算機', desc: '月々の返済額・総返済額・総利息を試算', href: '/tools/loan' },
   { title: '梁のたわみ計算', desc: '単純梁・片持ち梁のたわみ量を計算（準備中）', href: '/tools' },
   { title: 'アンカーボルト強度計算', desc: '引張・せん断強度を試算（準備中）', href: '/tools' },
   { title: '単位換算ツール', desc: 'mm↔inch、N↔kgf など建設・機械系単位（準備中）', href: '/tools' },
@@ -42,22 +35,6 @@ export default function HomePage() {
       </section>
 
       <div className="home-wrap">
-        <section className="home-section">
-          <div className="home-section-head">
-            <h2 className="home-section-title">カテゴリから探す</h2>
-            <Link href="/tools" className="home-section-link">すべて見る →</Link>
-          </div>
-          <div className="category-grid">
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.name} href={cat.href} className="category-card">
-                <span className="category-card-icon">{cat.icon}</span>
-                <span className="category-card-name">{cat.name}</span>
-                <span className="category-card-count">{cat.count}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
         <section className="home-section">
           <div className="home-section-head">
             <h2 className="home-section-title">人気のツール</h2>

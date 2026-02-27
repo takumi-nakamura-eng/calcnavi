@@ -8,7 +8,7 @@ const TOOLS = [
     id: 'loan',
     title: '住宅ローン計算機',
     desc: '月々の返済額・総返済額・総利息を試算。詳細な返済スケジュール表も確認できます。',
-    href: '/loan',
+    href: '/tools/loan',
     available: true,
   },
   {
