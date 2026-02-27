@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import HeroSearch from './home/HeroSearch';
+import { TOOLS } from '@/lib/data/tools';
+import { ARTICLES } from '@/lib/data/articles';
+import { getPageViews } from '@/lib/analytics';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'calcnavi（計算ナビ）| 設計・施工・暮らしの計算ツール',
@@ -8,15 +13,29 @@ export const metadata: Metadata = {
     '設計・施工・暮らしに役立つ計算ツールと解説をまとめたサイト。住宅ローン・ボルト計算など無料でご利用いただけます。',
 };
 
-const POPULAR = [
-  { title: '住宅ローン計算機', desc: '月々の返済額・総返済額・総利息を試算', href: '/tools/loan' },
-];
+export default async function HomePage() {
+  const availableTools = TOOLS.filter((t) => t.available);
+  const availableArticles = ARTICLES.filter((a) => a.available);
 
-const ARTICLES = [
-  { title: 'ナットの基礎知識', desc: 'ナットの種類・規格・選び方を解説。JIS B 1181 の 1種・2種・3種の違いなど。', href: '/articles/nut-basics' },
-];
+  const paths = [
+    ...availableTools.map((t) => t.href),
+    ...availableArticles.map((a) => a.href),
+  ];
 
-export default function HomePage() {
+  let views: Record<string, number> = {};
+  try {
+    views = await getPageViews(paths);
+  } catch {
+    // GA API 未設定またはエラー時は配列順（新しい順）のままにする
+  }
+
+  const sortedTools = [...availableTools].sort(
+    (a, b) => (views[b.href] ?? 0) - (views[a.href] ?? 0)
+  );
+  const sortedArticles = [...availableArticles].sort(
+    (a, b) => (views[b.href] ?? 0) - (views[a.href] ?? 0)
+  );
+
   return (
     <>
       <section className="hero">
@@ -38,8 +57,8 @@ export default function HomePage() {
             <Link href="/tools" className="home-section-link">すべて見る →</Link>
           </div>
           <div className="tool-list">
-            {POPULAR.map((tool, i) => (
-              <Link key={tool.title} href={tool.href} className="tool-item">
+            {sortedTools.map((tool, i) => (
+              <Link key={tool.id} href={tool.href} className="tool-item">
                 <span className="tool-item-rank">{i + 1}</span>
                 <span className="tool-item-body">
                   <span className="tool-item-title">{tool.title}</span>
@@ -57,8 +76,8 @@ export default function HomePage() {
             <Link href="/articles" className="home-section-link">すべて見る →</Link>
           </div>
           <div className="tool-list">
-            {ARTICLES.map((article, i) => (
-              <Link key={article.title} href={article.href} className="tool-item">
+            {sortedArticles.map((article, i) => (
+              <Link key={article.id} href={article.href} className="tool-item">
                 <span className="tool-item-rank">{i + 1}</span>
                 <span className="tool-item-body">
                   <span className="tool-item-title">{article.title}</span>

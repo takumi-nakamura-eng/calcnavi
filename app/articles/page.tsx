@@ -2,30 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-
-const ARTICLES = [
-  {
-    id: 'nut-basics',
-    title: 'ナットの基礎知識',
-    desc: 'ナットの種類・規格・選び方を解説。JIS B 1181 に基づく 1種・2種・3種の違いなど。',
-    href: '/articles/nut-basics',
-    available: true,
-  },
-  {
-    id: 'bolt-strength',
-    title: 'ボルトの強度区分',
-    desc: 'ボルトの強度区分（4.8・8.8・10.9 等）と用途の目安を解説します。',
-    href: '#',
-    available: false,
-  },
-  {
-    id: 'loan-basics',
-    title: '住宅ローンの基礎知識',
-    desc: '元利均等・元金均等の違いや金利の仕組みをわかりやすく解説します。',
-    href: '#',
-    available: false,
-  },
-];
+import { ARTICLES } from '@/lib/data/articles';
 
 export default function ArticlesPage() {
   const [query, setQuery] = useState('');
