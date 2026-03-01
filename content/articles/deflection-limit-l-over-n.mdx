@@ -45,7 +45,8 @@ sources:
 迷ったときは、まず契約図書・発注仕様・適用基準の指定値を優先します。  
 指定がない初期検討なら、仮置きは `L/300` から始めると調整しやすいです。  
 外観や機器レベル管理が厳しい案件は、保守側として `L/400` を検討します。  
-逆に、機能優先で変形影響が小さい用途は `L/200` が候補になります。
+逆に、機能優先で変形影響が小さい用途は `L/200` が候補になります。  
+この「指定値優先」の考え方は、法令・規準に基づく設計責任の前提（[建築基準法施行令](https://elaws.e-gov.go.jp/document?lawid=325CO0000000338)）と、実務規準の使い分け（[AIJ 鋼構造設計規準](https://www.aij.or.jp/paper/detail.html?productId=623)）を踏まえています。
 
 ## 図解
 
@@ -70,24 +71,24 @@ sources:
 | 機器据付ビーム・芯ずれに敏感な支持 | L/400 | レベル管理、据付精度、配管勾配に影響しやすい用途。要求値があればそれを優先。 |
 | 外観要求の強い部材（見付部） | L/400 | 視覚的なたわみを抑えたいケース。仕上げ・開口との納まり条件を同時確認。 |
 
+用途別の初期候補は、学協会規準と実務技術資料の両方を照合して整理しています（[AIJ 鋼構造設計規準](https://www.aij.or.jp/paper/detail.html?productId=623)、[MISUMI 技術情報](https://jp.misumi-ec.com/tech-info/)）。
+
 ## 計算の考え方
 
 許容たわみは `δ_allow = L / n` です。  
 同じスパン `L` なら、`n=400` は `n=200` の半分しかたわみを許容しません。  
-また、単純梁・片持ち梁・固定梁でたわみ式は変わるため、支持条件を間違えると判定が崩れます。
-
-<Quote
-  text="Simply supported beam with center point load: δmax = P L^3 / (48 E I)."
-  sourceTitle="Engineering ToolBox: Beam Deflection and Stress Formula"
-  sourceUrl="https://www.engineeringtoolbox.com/beam-stress-deflection-d_1312.html"
-  accessedAt="2026-03-01"
-/>
+また、単純梁・片持ち梁・固定梁でたわみ式は変わるため、支持条件を間違えると判定が崩れます。  
+たとえば単純梁の中央集中荷重では `δ_max = P L^3 / (48 E I)` を使います（[Engineering ToolBox の梁たわみ式整理](https://www.engineeringtoolbox.com/beam-stress-deflection-d_1312.html) を参照）。
 
 ## 計算例
 
 入力例（そのまま再現可能）:
 
-- ツール: [単純梁計算（Simple Beam）](/tools/beams/simple-supported)
+<a href="/tools/beams/simple-supported" className="portal-card">
+  <span className="portal-card-title">単純梁計算（Simple Beam）</span>
+  <span className="portal-card-desc">中央集中荷重／等分布荷重の曲げ応力・たわみ・許容判定を確認できます。</span>
+</a>
+
 - 支持条件: 単純支持（pin-roller）
 - 荷重条件: 中央集中荷重 `P = 20 kN`
 - スパン: `L = 4000 mm`
@@ -102,15 +103,6 @@ sources:
 - 許容たわみ `δ_allow = L/300 = 13.33 mm`
 - 判定（L/300）: **OK**（`10.84 <= 13.33`）
 - 同条件で `L/400` にすると `δ_allow = 10.00 mm` なので **NG**
-
-beam ツール再現手順:
-
-1. `/tools/beams/simple-supported` を開く  
-2. 荷重を「中央集中荷重」、単位を `kN`、`20` を入力  
-3. `L=4000`、`E=205`、`σ_allow=150` を入力  
-4. 断面を「直接入力」に切替え、`Z=250 cm³`、`I=1200 cm⁴` を入力  
-5. 許容たわみ分母を `300` にして計算  
-6. `δ_max` と `δ_allow` がそれぞれ約 `10.84 mm`、`13.33 mm` で OK を確認
 
 ## 落とし穴
 
