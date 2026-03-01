@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import ArticleViewTracker from '@/app/components/ArticleViewTracker';
 import ArticleEngagementTracker from '@/app/components/ArticleEngagementTracker';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
+import CardDiagram from '@/app/components/CardDiagram';
 import MdxOutboundLink from '@/app/components/MdxOutboundLink';
 import Quote from '@/app/components/mdx/Quote';
 import RelatedArticles from '@/app/components/RelatedArticles';
@@ -74,6 +75,7 @@ export default async function ArticleDetailPage({
   const relatedTools = TOOLS.filter(
     (tool) => tool.available && article.meta.toolRefs.includes(tool.id),
   );
+  const showHeaderDescription = article.meta.slug !== 'deflection-limit-l-over-n';
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -128,23 +130,25 @@ export default async function ArticleDetailPage({
         ]}
       />
 
-      <header className="article-header">
-        <h1 className="page-title">{article.meta.title}</h1>
-        <p className="page-description">{article.meta.description}</p>
-        <div className="article-meta">
-          <span>公開日: {formatDate(article.meta.publishedAt)}</span>
-          <span>更新日: {formatDate(article.meta.updatedAt)}</span>
-          <span>カテゴリ: {article.meta.category}</span>
-        </div>
-      </header>
-
       <article id="article-content" className="static-content article-content">
+        <header className="article-header article-header--inside">
+          <h1 className="page-title">{article.meta.title}</h1>
+          {showHeaderDescription ? (
+            <p className="page-description">{article.meta.description}</p>
+          ) : null}
+          <div className="article-meta">
+            <span>公開日: {formatDate(article.meta.publishedAt)}</span>
+            <span>更新日: {formatDate(article.meta.updatedAt)}</span>
+            <span>カテゴリ: {article.meta.category}</span>
+          </div>
+        </header>
         <MDXContent
           components={{
             a: (props: React.ComponentProps<'a'>) => (
               <MdxOutboundLink {...props} source={`article:${article.meta.slug}`} />
             ),
             Quote,
+            CardDiagram,
           }}
         />
       </article>

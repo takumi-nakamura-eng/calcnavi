@@ -719,6 +719,25 @@ body {
   margin: -0.75rem 0 1.25rem;
 }
 
+.article-header--inside {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-header--inside .page-title {
+  font-size: clamp(1.55rem, 3.8vw, 2.05rem);
+  margin-bottom: 0.45rem;
+}
+
+.article-header--inside .page-description {
+  margin-bottom: 1rem;
+}
+
+.article-header--inside .article-meta {
+  margin: 0;
+}
+
 .article-content h2 {
   border-left: 3px solid var(--primary);
   padding-left: 0.625rem;
@@ -736,6 +755,34 @@ body {
   width: 100%;
   height: auto;
   display: block;
+}
+
+.article-content .diagram-card--compact {
+  width: 50%;
+  max-width: none;
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-content .diagram-card--compact svg {
+  max-height: 220px;
+}
+
+.article-content .article-tool-item {
+  margin: 0.65rem 0 0.85rem;
+  padding-left: 1.2rem;
+}
+
+.article-content .article-tool-item .tool-item-diagram {
+  width: 92px;
+  height: 62px;
+}
+
+@media (max-width: 900px) {
+  .article-content .diagram-card--compact {
+    width: 75%;
+  }
 }
 
 .article-content .article-table {
