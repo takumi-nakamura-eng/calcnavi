@@ -773,6 +773,52 @@ body {
   margin-top: 1.4rem;
 }
 
+.article-quote {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid var(--primary);
+  background: #f8fbff;
+  border-radius: 0.5rem;
+}
+
+.article-quote blockquote {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.8;
+}
+
+.article-quote figcaption {
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.article-sources {
+  margin-top: 1.5rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: #fafcff;
+}
+
+.article-sources h2 {
+  margin: 0 0 0.7rem;
+  font-size: 1rem;
+}
+
+.article-sources ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .ad-slot {
   margin-top: 2rem;
   padding: 0.75rem;

@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/privacy',
     '/terms',
     '/disclaimer',
+    '/editorial-policy',
   ];
 
   const toolPaths = TOOLS.filter((tool) => tool.available).map((tool) => tool.href);

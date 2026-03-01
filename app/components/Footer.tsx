@@ -15,6 +15,7 @@ export default function Footer() {
           <Link href="/privacy">プライバシーポリシー</Link>
           <Link href="/terms">利用規約</Link>
           <Link href="/disclaimer">免責事項</Link>
+          <Link href="/editorial-policy">編集ポリシー</Link>
         </div>
         <p className="footer-copy">© {new Date().getFullYear()} calcnavi（計算ナビ）</p>
       </div>

@@ -5,6 +5,7 @@ import ArticleViewTracker from '@/app/components/ArticleViewTracker';
 import ArticleEngagementTracker from '@/app/components/ArticleEngagementTracker';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import MdxOutboundLink from '@/app/components/MdxOutboundLink';
+import Quote from '@/app/components/mdx/Quote';
 import RelatedArticles from '@/app/components/RelatedArticles';
 import RelatedTools from '@/app/components/RelatedTools';
 import AdSlot from '@/app/components/ads/AdSlot';
@@ -143,9 +144,31 @@ export default async function ArticleDetailPage({
             a: (props: React.ComponentProps<'a'>) => (
               <MdxOutboundLink {...props} source={`article:${article.meta.slug}`} />
             ),
+            Quote,
           }}
         />
       </article>
+
+      <section className="article-sources">
+        <h2>出典・参考</h2>
+        <ul>
+          {article.meta.sources.map((source, index) => (
+            <li key={`${source.url}-${index}`}>
+              <MdxOutboundLink
+                href={source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                source={`article:${article.meta.slug}:sources`}
+              >
+                {source.title}
+              </MdxOutboundLink>
+              {source.site ? <span>（{source.site}）</span> : null}
+              <span> - 参照日: {source.accessedAt}</span>
+              {source.note ? <span> - {source.note}</span> : null}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE} className="article-ad" pageType="article" />
 

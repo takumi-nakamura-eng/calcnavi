@@ -7,10 +7,21 @@ import { evaluate } from '@mdx-js/mdx';
 import * as runtime from 'react/jsx-runtime';
 
 const ARTICLES_DIR = path.join(process.cwd(), 'content/articles');
+const DRAFTS_DIR_NAME = '_drafts';
+const MAX_QUOTE_LENGTH = 120;
 
 export interface ArticleFaqItem {
   q: string;
   a: string;
+}
+
+export interface ArticleSource {
+  title: string;
+  url: string;
+  site?: string;
+  accessedAt: string;
+  note?: string;
+  quote?: string;
 }
 
 export interface ArticleMeta {
@@ -24,6 +35,7 @@ export interface ArticleMeta {
   toolRefs: string[];
   diagramKey: string;
   faq: ArticleFaqItem[];
+  sources: ArticleSource[];
   thumbnailSvg?: string;
   href: string;
 }
@@ -43,6 +55,7 @@ interface ParsedFrontmatter {
   toolRefs: string[];
   diagramKey: string;
   faq: ArticleFaqItem[];
+  sources: ArticleSource[];
 }
 
 function escapeHtml(text: string): string {
@@ -125,6 +138,62 @@ function stripQuotes(value: string): string {
   return value.replace(/^['\"]|['\"]$/g, '');
 }
 
+function isValidHttpUrl(input: string): boolean {
+  try {
+    const url = new URL(input);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function isValidDate(input: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input)) return false;
+  const date = new Date(`${input}T00:00:00Z`);
+  return !Number.isNaN(date.getTime());
+}
+
+function toPosixPath(value: string): string {
+  return value.replace(/\\/g, '/');
+}
+
+export function isPublicArticle(target: string | Pick<ArticleMeta, 'slug'>): boolean {
+  const raw = typeof target === 'string' ? target : target.slug;
+  const normalized = toPosixPath(raw).replace(/\.mdx$/, '');
+  const segments = normalized.split('/').filter(Boolean);
+  const basename = segments[segments.length - 1] ?? '';
+  if (segments.includes(DRAFTS_DIR_NAME)) return false;
+  if (basename.startsWith('_')) return false;
+  return true;
+}
+
+function isDraftArticlePath(relativePath: string): boolean {
+  return !isPublicArticle(relativePath);
+}
+
+async function listMdxFilesRecursively(
+  dir: string,
+  base = '',
+): Promise<string[]> {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const files: string[] = [];
+
+  for (const entry of entries) {
+    const rel = base ? `${base}/${entry.name}` : entry.name;
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const nested = await listMdxFilesRecursively(abs, rel);
+      files.push(...nested);
+      continue;
+    }
+    if (entry.isFile() && entry.name.endsWith('.mdx')) {
+      files.push(toPosixPath(rel));
+    }
+  }
+
+  return files;
+}
+
 function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: string } {
   const match = source.match(/^---\n([\s\S]*?)\n---\n?/);
   if (!match) {
@@ -133,7 +202,7 @@ function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: stri
 
   const block = match[1];
   const body = source.slice(match[0].length);
-  const record: Record<string, string | string[] | ArticleFaqItem[]> = {};
+  const record: Record<string, string | string[] | ArticleFaqItem[] | ArticleSource[]> = {};
   let currentListKey: string | null = null;
 
   for (const rawLine of block.split('\n')) {
@@ -145,7 +214,7 @@ function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: stri
       const [, key, rawValue] = keyValueMatch;
       if (!rawValue) {
         currentListKey = key;
-        record[key] = key === 'faq' ? [] : [];
+        record[key] = key === 'faq' || key === 'sources' ? [] : [];
         continue;
       }
 
@@ -184,6 +253,34 @@ function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: stri
       continue;
     }
 
+    if (currentListKey === 'sources') {
+      const titleMatch = line.match(/^\s*-\s*title:\s*(.+)$/);
+      if (titleMatch) {
+        const sourceList = record.sources as ArticleSource[];
+        sourceList.push({
+          title: stripQuotes(titleMatch[1].trim()),
+          url: '',
+          accessedAt: '',
+        });
+        continue;
+      }
+
+      const sourceFieldMatch = line.match(/^\s*([A-Za-z0-9_]+):\s*(.+)$/);
+      if (sourceFieldMatch) {
+        const [, fieldKey, rawFieldValue] = sourceFieldMatch;
+        const sourceList = record.sources as ArticleSource[];
+        const last = sourceList[sourceList.length - 1];
+        if (!last) continue;
+        const value = stripQuotes(rawFieldValue.trim());
+        if (fieldKey === 'url') last.url = value;
+        if (fieldKey === 'site') last.site = value;
+        if (fieldKey === 'accessedAt') last.accessedAt = value;
+        if (fieldKey === 'note') last.note = value;
+        if (fieldKey === 'quote') last.quote = value;
+      }
+      continue;
+    }
+
     const listMatch = line.match(/^\s*-\s*(.+)$/);
     if (listMatch) {
       const list = record[currentListKey];
@@ -193,46 +290,79 @@ function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: stri
     }
   }
 
-  const requiredKeys = [
-    'title',
-    'description',
-    'publishedAt',
-    'updatedAt',
-    'category',
-    'tags',
-    'toolRefs',
-    'diagramKey',
-    'faq',
-  ] as const;
-
-  for (const key of requiredKeys) {
-    if (!(key in record)) {
-      throw new Error(`Frontmatter is missing key: ${key}`);
-    }
-  }
-
   const faq = Array.isArray(record.faq) ? (record.faq as ArticleFaqItem[]) : [];
+  const sources = Array.isArray(record.sources) ? (record.sources as ArticleSource[]) : [];
 
   return {
     data: {
-      title: String(record.title),
-      description: String(record.description),
-      publishedAt: String(record.publishedAt),
-      updatedAt: String(record.updatedAt),
-      category: String(record.category),
+      title: String(record.title ?? ''),
+      description: String(record.description ?? ''),
+      publishedAt: String(record.publishedAt ?? ''),
+      updatedAt: String(record.updatedAt ?? ''),
+      category: String(record.category ?? ''),
       tags: Array.isArray(record.tags) ? (record.tags as string[]) : [],
       toolRefs: Array.isArray(record.toolRefs) ? (record.toolRefs as string[]) : [],
-      diagramKey: String(record.diagramKey),
+      diagramKey: String(record.diagramKey ?? ''),
       faq,
+      sources,
     },
     body,
   };
 }
 
-function validateArticleContent(slug: string, meta: ParsedFrontmatter, body: string): void {
+function validateSources(
+  slug: string,
+  sources: ArticleSource[],
+  opts: { isDraft: boolean },
+): void {
+  const issues: string[] = [];
+
+  if (sources.length < 3) {
+    issues.push('sources(3件以上)');
+  }
+
+  for (const [index, source] of sources.entries()) {
+    const label = `sources[${index + 1}]`;
+    if (!source.title?.trim()) issues.push(`${label}.title`);
+    if (!source.url?.trim() || !isValidHttpUrl(source.url)) issues.push(`${label}.url`);
+    if (!source.accessedAt?.trim() || !isValidDate(source.accessedAt)) {
+      issues.push(`${label}.accessedAt`);
+    }
+    if (source.quote && source.quote.length > MAX_QUOTE_LENGTH) {
+      issues.push(`${label}.quote(${MAX_QUOTE_LENGTH}文字以内)`);
+    }
+  }
+
+  if (issues.length === 0) return;
+
+  const message = `Article ${slug}.mdx has invalid sources: ${issues.join(', ')}`;
+  if (opts.isDraft) {
+    console.warn(`[draft-warning] ${message}`);
+    return;
+  }
+  throw new Error(message);
+}
+
+function validateArticleContent(
+  slug: string,
+  meta: ParsedFrontmatter,
+  body: string,
+  opts: { isDraft: boolean },
+): void {
+  validateSources(slug, meta.sources, opts);
+
+  if (opts.isDraft) return;
+
   const missing: string[] = [];
 
+  if (!meta.title.trim()) missing.push('title');
+  if (!meta.description.trim()) missing.push('description');
+  if (!meta.publishedAt.trim()) missing.push('publishedAt');
+  if (!meta.updatedAt.trim()) missing.push('updatedAt');
+  if (!meta.category.trim()) missing.push('category');
   if (!meta.diagramKey.trim()) missing.push('diagramKey');
+  if (meta.toolRefs.length === 0) missing.push('toolRefs');
+  if (meta.tags.length === 0) missing.push('tags');
   if (meta.faq.length < 2 || meta.faq.some((item) => !item.q.trim() || !item.a.trim())) {
     missing.push('faq(2件以上)');
   }
@@ -267,7 +397,7 @@ async function readArticleFile(slug: string): Promise<Article | null> {
   const filePath = path.join(ARTICLES_DIR, `${slug}.mdx`);
   const source = await fs.readFile(filePath, 'utf8');
   const { data, body } = parseFrontmatter(source);
-  validateArticleContent(slug, data, body);
+  validateArticleContent(slug, data, body, { isDraft: false });
 
   return {
     meta: {
@@ -280,11 +410,28 @@ async function readArticleFile(slug: string): Promise<Article | null> {
   };
 }
 
+const warnDraftArticles = cache(async () => {
+  const allFiles = await listMdxFilesRecursively(ARTICLES_DIR);
+  const draftFiles = allFiles.filter((file) => isDraftArticlePath(file));
+  for (const relPath of draftFiles) {
+    const slug = relPath.replace(/\.mdx$/, '');
+    try {
+      const source = await fs.readFile(path.join(ARTICLES_DIR, relPath), 'utf8');
+      const { data, body } = parseFrontmatter(source);
+      validateArticleContent(slug, data, body, { isDraft: true });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`[draft-warning] Failed to validate ${slug}.mdx: ${message}`);
+    }
+  }
+});
+
 export const getAllArticles = cache(async (): Promise<ArticleMeta[]> => {
-  const entries = await fs.readdir(ARTICLES_DIR, { withFileTypes: true });
-  const slugs = entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.mdx') && !entry.name.startsWith('_'))
-    .map((entry) => entry.name.replace(/\.mdx$/, ''));
+  await warnDraftArticles();
+  const allFiles = await listMdxFilesRecursively(ARTICLES_DIR);
+  const slugs = allFiles
+    .filter((file) => isPublicArticle(file))
+    .map((file) => file.replace(/\.mdx$/, ''));
 
   const articles = await Promise.all(slugs.map((slug) => readArticleFile(slug)));
 
@@ -295,6 +442,7 @@ export const getAllArticles = cache(async (): Promise<ArticleMeta[]> => {
 });
 
 export const getArticleBySlug = cache(async (slug: string): Promise<Article | null> => {
+  if (!isPublicArticle(slug)) return null;
   try {
     return await readArticleFile(slug);
   } catch {

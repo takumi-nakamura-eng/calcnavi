@@ -1,0 +1,9 @@
+candidateId,impressions,ctr,avgPosition,practicality,sourceCoverage
+bolt-length,6200,0.021,9.8,0.95,0.9
+simple-beam,5400,0.028,11.2,0.9,0.9
+section-properties,4700,0.024,12.6,0.88,0.85
+anchor,2100,0.017,13.4,0.92,0.8
+shaft-torsion,980,0.012,18.5,0.75,0.7
+motor-power-speed,760,0.011,21.2,0.7,0.7
+belt-pulley,640,0.015,19.7,0.68,0.65
+piping-pressure-loss,580,0.009,23.5,0.72,0.65
