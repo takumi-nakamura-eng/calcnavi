@@ -17,6 +17,79 @@ const SPECS: Record<Diameter, { p: number; Hnut: number; Hpw: number; Hsw: numbe
   M24: { p: 3.0, Hnut: 21.5, Hpw: 4.0, Hsw: 5.6 },
 };
 
+type BoltPreset = {
+  key: string;
+  label: string;
+  diam: Diameter;
+  t: string;
+  n: string;
+  pw: string;
+  sw: string;
+  purpose: string;
+};
+
+const INPUT_PRESETS: BoltPreset[] = [
+  {
+    key: 'plate-single',
+    label: '鋼板1枚 + ナット1枚 + 平座金1枚',
+    diam: 'M12',
+    t: '12',
+    n: '1',
+    pw: '1',
+    sw: '0',
+    purpose: '鋼板固定（標準）',
+  },
+  {
+    key: 'machine-base',
+    label: '機械ベース固定（平座金+ばね座金）',
+    diam: 'M16',
+    t: '20',
+    n: '1',
+    pw: '1',
+    sw: '1',
+    purpose: 'モーターベース固定',
+  },
+  {
+    key: 'thick-member',
+    label: '厚板締結（ナット2枚）',
+    diam: 'M20',
+    t: '35',
+    n: '2',
+    pw: '1',
+    sw: '0',
+    purpose: '厚板ブラケット固定',
+  },
+  {
+    key: 'light-cover',
+    label: '軽量カバー固定',
+    diam: 'M8',
+    t: '6',
+    n: '1',
+    pw: '1',
+    sw: '0',
+    purpose: 'カバー取付',
+  },
+];
+
+function parseIntegerInRange(
+  value: string,
+  fieldLabel: string,
+  min: number,
+  max: number,
+): { ok: true; value: number } | { ok: false; error: string } {
+  if (value.trim() === '') {
+    return { ok: false, error: `${fieldLabel}を入力してください。` };
+  }
+  if (!/^\d+$/.test(value.trim())) {
+    return { ok: false, error: `${fieldLabel}は整数で入力してください。` };
+  }
+  const num = Number(value);
+  if (num < min || num > max) {
+    return { ok: false, error: `${fieldLabel}は${min}〜${max}の範囲で入力してください。` };
+  }
+  return { ok: true, value: num };
+}
+
 
 function ceilToBuyLength(mm: number): number {
   const step = mm <= 100 ? 5 : mm <= 200 ? 10 : 25;
@@ -33,15 +106,36 @@ interface Result {
 }
 
 export default function BoltCalculator() {
-  const [diam, setDiam] = useState<Diameter>('M12');
-  const [n, setN] = useState('1');
-  const [pw, setPw] = useState('1');
-  const [sw, setSw] = useState('1');
-  const [t, setT] = useState('20');
-  const [purpose, setPurpose] = useState('');
+  const initialPreset = INPUT_PRESETS[0];
+  const [presetKey, setPresetKey] = useState(initialPreset.key);
+  const [diam, setDiam] = useState<Diameter>(initialPreset.diam);
+  const [n, setN] = useState(initialPreset.n);
+  const [pw, setPw] = useState(initialPreset.pw);
+  const [sw, setSw] = useState(initialPreset.sw);
+  const [t, setT] = useState(initialPreset.t);
+  const [purpose, setPurpose] = useState(initialPreset.purpose);
   const [tError, setTError] = useState('');
+  const [nError, setNError] = useState('');
+  const [pwError, setPwError] = useState('');
+  const [swError, setSwError] = useState('');
   const [result, setResult] = useState<Result | null>(null);
   const [lastEntry, setLastEntry] = useState<EngHistoryEntry | null>(null);
+
+  function applyPreset(key: string) {
+    const preset = INPUT_PRESETS.find((item) => item.key === key);
+    if (!preset) return;
+    setPresetKey(key);
+    setDiam(preset.diam);
+    setT(preset.t);
+    setN(preset.n);
+    setPw(preset.pw);
+    setSw(preset.sw);
+    setPurpose(preset.purpose);
+    setTError('');
+    setNError('');
+    setPwError('');
+    setSwError('');
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -53,10 +147,18 @@ export default function BoltCalculator() {
     }
     setTError('');
 
+    const parsedN = parseIntegerInRange(n, '六角ナット N', 0, 10);
+    const parsedPw = parseIntegerInRange(pw, '平座金 PW', 0, 10);
+    const parsedSw = parseIntegerInRange(sw, 'ばね座金 SW', 0, 10);
+    setNError(parsedN.ok ? '' : parsedN.error);
+    setPwError(parsedPw.ok ? '' : parsedPw.error);
+    setSwError(parsedSw.ok ? '' : parsedSw.error);
+    if (!parsedN.ok || !parsedPw.ok || !parsedSw.ok) return;
+
     const spec = SPECS[diam];
-    const nv = Math.max(0, parseInt(n, 10) || 0);
-    const pwv = Math.max(0, parseInt(pw, 10) || 0);
-    const swv = Math.max(0, parseInt(sw, 10) || 0);
+    const nv = parsedN.value;
+    const pwv = parsedPw.value;
+    const swv = parsedSw.value;
 
     const nutTerm = nv * spec.Hnut;
     const pwTerm = pwv * spec.Hpw;
@@ -140,6 +242,22 @@ export default function BoltCalculator() {
   return (
     <>
       <form className="loan-form" onSubmit={handleSubmit} noValidate>
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+          <label htmlFor="bolt-preset">入力プリセット</label>
+          <select
+            id="bolt-preset"
+            value={presetKey}
+            onChange={(e) => applyPreset(e.target.value)}
+          >
+            {INPUT_PRESETS.map((preset) => (
+              <option key={preset.key} value={preset.key}>
+                {preset.label}
+              </option>
+            ))}
+          </select>
+          <span className="beam-conv">代表条件を読み込み後、必要に応じて各値を調整できます。</span>
+        </div>
+
         <div className="form-group">
           <label htmlFor="diam">呼び径</label>
           <select id="diam" value={diam} onChange={(e) => setDiam(e.target.value as Diameter)}>
@@ -169,17 +287,56 @@ export default function BoltCalculator() {
 
         <div className="form-group">
           <label htmlFor="nNut">六角ナット N (枚)</label>
-          <input id="nNut" type="number" min="0" max="10" value={n} onChange={(e) => setN(e.target.value)} />
+          <input
+            id="nNut"
+            type="number"
+            min="0"
+            max="10"
+            step="1"
+            value={n}
+            onChange={(e) => {
+              setN(e.target.value);
+              setNError('');
+            }}
+            className={nError ? 'input-error' : ''}
+          />
+          {nError && <span className="error-message">{nError}</span>}
         </div>
 
         <div className="form-group">
           <label htmlFor="nPw">平座金 PW (枚)</label>
-          <input id="nPw" type="number" min="0" max="10" value={pw} onChange={(e) => setPw(e.target.value)} />
+          <input
+            id="nPw"
+            type="number"
+            min="0"
+            max="10"
+            step="1"
+            value={pw}
+            onChange={(e) => {
+              setPw(e.target.value);
+              setPwError('');
+            }}
+            className={pwError ? 'input-error' : ''}
+          />
+          {pwError && <span className="error-message">{pwError}</span>}
         </div>
 
         <div className="form-group">
           <label htmlFor="nSw">ばね座金 SW (枚)</label>
-          <input id="nSw" type="number" min="0" max="10" value={sw} onChange={(e) => setSw(e.target.value)} />
+          <input
+            id="nSw"
+            type="number"
+            min="0"
+            max="10"
+            step="1"
+            value={sw}
+            onChange={(e) => {
+              setSw(e.target.value);
+              setSwError('');
+            }}
+            className={swError ? 'input-error' : ''}
+          />
+          {swError && <span className="error-message">{swError}</span>}
         </div>
 
         <div className="form-group" style={{ gridColumn: '1 / -1' }}>
