@@ -1,0 +1,56 @@
+---
+title: "許容たわみ L/n の使い方"
+description: "L/200, L/300, L/400 などの許容たわみ基準を、梁計算でどう使い分けるか整理します。"
+publishedAt: "2026-03-03"
+updatedAt: "2026-03-03"
+category: "梁・断面"
+tags:
+  - "たわみ"
+  - "L/n"
+  - "梁設計"
+toolRefs:
+  - "beam"
+diagramKey: "deflection-limit"
+faq:
+  - q: "L/300 は厳しい基準ですか？"
+    a: "一般的な床梁用途では標準的な基準です。用途によってより厳しい設定もあります。"
+  - q: "L/n を上げると何が起きますか？"
+    a: "許容たわみが小さくなるため、断面を大きくする方向の設計になります。"
+---
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="L/n基準図">
+  <line x1="60" y1="120" x2="500" y2="120" stroke="#111827" stroke-width="8" />
+  <line x1="60" y1="150" x2="500" y2="150" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 4" />
+  <path d="M60 120 Q280 80 500 120" fill="none" stroke="#2563eb" stroke-width="3" />
+  <text x="280" y="170" text-anchor="middle" font-size="12">δallow = L / n</text>
+</svg>
+</div>
+
+## 比較表
+
+| 基準 | L=3000mm時のδallow |
+|---|---:|
+| L/200 | 15.0 mm |
+| L/300 | 10.0 mm |
+| L/400 | 7.5 mm |
+
+## 計算例
+
+条件: `L = 3600 mm`, `基準 = L/300`。
+
+式: `δallow = L / 300`
+
+計算: `δallow = 3600 / 300 = 12.0 mm`
+
+結果: 許容たわみは **12.0 mm**。
+
+## FAQ
+
+### Q1. L/200とL/300はどう選びますか？
+A. 仕上げ材や使用性要求が高い場合はL/300以上を選ぶケースが多いです。
+
+### Q2. たわみOKでも振動問題は防げますか？
+A. 防げない場合があります。振動・固有値の検討は別途必要です。

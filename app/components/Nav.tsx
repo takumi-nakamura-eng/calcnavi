@@ -1,13 +1,23 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 
 export default function Nav() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
 
   const close = () => setOpen(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    close();
+    router.push(q ? `/tools?q=${encodeURIComponent(q)}` : '/tools');
+  };
 
   return (
     <nav className="nav">
@@ -29,6 +39,16 @@ export default function Nav() {
           <span />
           <span />
         </button>
+
+        <form className="nav-search" onSubmit={handleSearch} role="search">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="キーワード検索"
+            aria-label="サイト内検索"
+          />
+        </form>
 
         <div className={`nav-links${open ? ' nav-links--open' : ''}`}>
           <Link href="/" onClick={close}>Home</Link>

@@ -1,19 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+import { addEngHistoryEntry, type EngHistoryEntry, type FormulaStep } from '@/lib/engHistory';
+import { printEngReport } from '@/lib/printReport';
 import { trackToolCalculate } from '@/lib/analytics/events';
 
 type Diameter = 'M6' | 'M8' | 'M10' | 'M12' | 'M16' | 'M20' | 'M24';
 
 const SPECS: Record<Diameter, { p: number; Hnut: number; Hpw: number; Hsw: number }> = {
-  M6:  { p: 1.0,  Hnut: 5.2,  Hpw: 1.6, Hsw: 1.6 },
-  M8:  { p: 1.25, Hnut: 6.8,  Hpw: 1.6, Hsw: 2.0 },
-  M10: { p: 1.5,  Hnut: 8.4,  Hpw: 2.0, Hsw: 2.5 },
+  M6: { p: 1.0, Hnut: 5.2, Hpw: 1.6, Hsw: 1.6 },
+  M8: { p: 1.25, Hnut: 6.8, Hpw: 1.6, Hsw: 2.0 },
+  M10: { p: 1.5, Hnut: 8.4, Hpw: 2.0, Hsw: 2.5 },
   M12: { p: 1.75, Hnut: 10.8, Hpw: 2.5, Hsw: 3.0 },
-  M16: { p: 2.0,  Hnut: 14.8, Hpw: 3.0, Hsw: 4.0 },
-  M20: { p: 2.5,  Hnut: 18.0, Hpw: 3.0, Hsw: 5.1 },
-  M24: { p: 3.0,  Hnut: 21.5, Hpw: 4.0, Hsw: 5.6 },
+  M16: { p: 2.0, Hnut: 14.8, Hpw: 3.0, Hsw: 4.0 },
+  M20: { p: 2.5, Hnut: 18.0, Hpw: 3.0, Hsw: 5.1 },
+  M24: { p: 3.0, Hnut: 21.5, Hpw: 4.0, Hsw: 5.6 },
 };
+
 
 function ceilToBuyLength(mm: number): number {
   const step = mm <= 100 ? 5 : mm <= 200 ? 10 : 25;
@@ -26,6 +29,7 @@ interface Result {
   tipAllowance: number;
   breakdown: { label: string; value: number }[];
   diam: Diameter;
+  steps: FormulaStep[];
 }
 
 export default function BoltCalculator() {
@@ -33,12 +37,15 @@ export default function BoltCalculator() {
   const [n, setN] = useState('1');
   const [pw, setPw] = useState('1');
   const [sw, setSw] = useState('1');
-  const [t, setT] = useState('');
+  const [t, setT] = useState('20');
+  const [purpose, setPurpose] = useState('');
   const [tError, setTError] = useState('');
   const [result, setResult] = useState<Result | null>(null);
+  const [lastEntry, setLastEntry] = useState<EngHistoryEntry | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     const tVal = parseFloat(t);
     if (!t || isNaN(tVal) || tVal <= 0) {
       setTError('締結厚さを正の数で入力してください。');
@@ -47,26 +54,86 @@ export default function BoltCalculator() {
     setTError('');
 
     const spec = SPECS[diam];
-    const nv = Math.max(0, parseInt(n) || 0);
-    const pwv = Math.max(0, parseInt(pw) || 0);
-    const swv = Math.max(0, parseInt(sw) || 0);
-    const tip = 3 * spec.p;
-    const lRequired =
-      tVal + nv * spec.Hnut + pwv * spec.Hpw + swv * spec.Hsw + tip;
+    const nv = Math.max(0, parseInt(n, 10) || 0);
+    const pwv = Math.max(0, parseInt(pw, 10) || 0);
+    const swv = Math.max(0, parseInt(sw, 10) || 0);
 
-    setResult({
+    const nutTerm = nv * spec.Hnut;
+    const pwTerm = pwv * spec.Hpw;
+    const swTerm = swv * spec.Hsw;
+    const tip = 3 * spec.p;
+
+    const lRequired = tVal + nutTerm + pwTerm + swTerm + tip;
+    const lBuy = ceilToBuyLength(lRequired);
+
+    const steps: FormulaStep[] = [
+      {
+        label: '先端余長',
+        expr: `先端余長 = 3p = 3 × ${spec.p.toFixed(2)} = ${tip.toFixed(2)} mm`,
+      },
+      {
+        label: '必要長さ',
+        expr:
+          `L_required = t + N×Hnut + PW×Hpw + SW×Hsw + 3p\n` +
+          `= ${tVal.toFixed(1)} + ${nv}×${spec.Hnut.toFixed(1)} + ${pwv}×${spec.Hpw.toFixed(1)} + ${swv}×${spec.Hsw.toFixed(1)} + ${tip.toFixed(2)}\n` +
+          `= ${lRequired.toFixed(2)} mm`,
+      },
+      {
+        label: '推奨購入長さ',
+        expr: `規格刻みに切り上げ: ceil(${lRequired.toFixed(2)}) -> ${lBuy} mm`,
+      },
+    ];
+
+    const nextResult: Result = {
       lRequired,
-      lBuy: ceilToBuyLength(lRequired),
+      lBuy,
       tipAllowance: tip,
       diam,
+      steps,
       breakdown: [
         { label: '締結厚さ t', value: tVal },
-        { label: `六角ナット N × ${nv}`, value: nv * spec.Hnut },
-        { label: `平座金 PW × ${pwv}`, value: pwv * spec.Hpw },
-        { label: `ばね座金 SW × ${swv}`, value: swv * spec.Hsw },
+        { label: `六角ナット N × ${nv}`, value: nutTerm },
+        { label: `平座金 PW × ${pwv}`, value: pwTerm },
+        { label: `ばね座金 SW × ${swv}`, value: swTerm },
         { label: '先端余長 (3p)', value: tip },
       ],
+    };
+    setResult(nextResult);
+
+    const entry = addEngHistoryEntry({
+      toolId: 'bolt-length',
+      toolName: 'ボルト長さ計算',
+      inputs: {
+        material: 'JIS規格値',
+        purpose: purpose.trim() || undefined,
+        shapeKey: 'bolt-length',
+        shapeName: 'ボルト締結',
+        dims: {
+          '締結厚さ t': `${tVal.toFixed(1)} mm`,
+          ナット枚数: `${nv} 枚`,
+          平座金枚数: `${pwv} 枚`,
+          ばね座金枚数: `${swv} 枚`,
+          ピッチ: `${spec.p} mm`,
+        },
+        rawDims: {
+          t: tVal,
+          n: nv,
+          pw: pwv,
+          sw: swv,
+          p: spec.p,
+        },
+        boltPreset: undefined,
+        diameter: diam,
+      },
+      results: {
+        lRequired_mm: lRequired,
+        lBuy_mm: lBuy,
+        tipAllowance_mm: tip,
+      },
+      formulaSteps: steps,
     });
+    setLastEntry(entry);
+
     trackToolCalculate({ toolId: 'bolt-length', category: 'ねじ・締結' });
   }
 
@@ -75,11 +142,7 @@ export default function BoltCalculator() {
       <form className="loan-form" onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="diam">呼び径</label>
-          <select
-            id="diam"
-            value={diam}
-            onChange={(e) => setDiam(e.target.value as Diameter)}
-          >
+          <select id="diam" value={diam} onChange={(e) => setDiam(e.target.value as Diameter)}>
             {(Object.keys(SPECS) as Diameter[]).map((d) => (
               <option key={d} value={d}>{d}</option>
             ))}
@@ -95,38 +158,49 @@ export default function BoltCalculator() {
             step="0.1"
             placeholder="例: 20"
             value={t}
-            onChange={(e) => { setT(e.target.value); setTError(''); }}
+            onChange={(e) => {
+              setT(e.target.value);
+              setTError('');
+            }}
             className={tError ? 'input-error' : ''}
           />
           {tError && <span className="error-message">{tError}</span>}
         </div>
 
         <div className="form-group">
-          <label htmlFor="nNut">
-            六角ナット N (枚){' '}
-            <small style={{ color: 'var(--text-muted)', fontWeight: 400 }}>JIS B 1181（1種）</small>
-          </label>
+          <label htmlFor="nNut">六角ナット N (枚)</label>
           <input id="nNut" type="number" min="0" max="10" value={n} onChange={(e) => setN(e.target.value)} />
         </div>
 
         <div className="form-group">
-          <label htmlFor="nPw">
-            平座金 PW (枚){' '}
-            <small style={{ color: 'var(--text-muted)', fontWeight: 400 }}>JIS B 1256（並形）</small>
-          </label>
+          <label htmlFor="nPw">平座金 PW (枚)</label>
           <input id="nPw" type="number" min="0" max="10" value={pw} onChange={(e) => setPw(e.target.value)} />
         </div>
 
         <div className="form-group">
-          <label htmlFor="nSw">
-            ばね座金 SW (枚){' '}
-            <small style={{ color: 'var(--text-muted)', fontWeight: 400 }}>JIS B 1251</small>
-          </label>
+          <label htmlFor="nSw">ばね座金 SW (枚)</label>
           <input id="nSw" type="number" min="0" max="10" value={sw} onChange={(e) => setSw(e.target.value)} />
+        </div>
+
+        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+          <label htmlFor="bolt-purpose">用途メモ（任意）</label>
+          <input
+            id="bolt-purpose"
+            type="text"
+            value={purpose}
+            onChange={(e) => setPurpose(e.target.value)}
+            placeholder="例: モーターベース固定"
+            maxLength={100}
+          />
         </div>
 
         <div className="form-submit-row">
           <button type="submit" className="btn-primary">計算する</button>
+          {lastEntry && (
+            <button type="button" className="pdf-btn" onClick={() => printEngReport(lastEntry)}>
+              PDF出力
+            </button>
+          )}
         </div>
       </form>
 
@@ -143,7 +217,7 @@ export default function BoltCalculator() {
             </div>
             <div className="result-card">
               <p className="result-label">計算値</p>
-              <p className="result-value">{result.lRequired.toFixed(1)} mm</p>
+              <p className="result-value">{result.lRequired.toFixed(2)} mm</p>
             </div>
           </div>
 
@@ -163,7 +237,7 @@ export default function BoltCalculator() {
                       <td style={{ textAlign: 'left', color: 'var(--text)', fontWeight: 400 }}>
                         {row.label}
                       </td>
-                      <td>{row.value.toFixed(1)}</td>
+                      <td>{row.value.toFixed(2)}</td>
                     </tr>
                   ))}
                   <tr>
@@ -171,12 +245,22 @@ export default function BoltCalculator() {
                       合計 (L_required)
                     </td>
                     <td style={{ color: 'var(--primary)', fontWeight: 700 }}>
-                      {result.lRequired.toFixed(1)}
+                      {result.lRequired.toFixed(2)}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <div className="formula-steps-section" style={{ marginTop: '1.5rem' }}>
+            <h3 className="formula-steps-title">計算式・途中経過</h3>
+            {result.steps.map((step) => (
+              <div key={step.label} className="formula-step-item">
+                <span className="formula-step-label">{step.label}</span>
+                <pre className="formula-step-expr">{step.expr}</pre>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -188,39 +272,8 @@ export default function BoltCalculator() {
         </code>
         <ul style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', paddingLeft: '1.25rem', lineHeight: 1.7 }}>
           <li>3p = ピッチ p × 3（先端3山分）</li>
-          <li>推奨購入長さ：≤100mm → 5mm刻み / ≤200mm → 10mm刻み / 200mm超 → 25mm刻み</li>
+          <li>推奨購入長さ: 100mm以下は5mm刻み、200mm以下は10mm刻み、200mm超は25mm刻み</li>
         </ul>
-      </div>
-
-      <div className="table-section" style={{ marginTop: '3rem' }}>
-        <h3>参考寸法テーブル</h3>
-        <div className="table-container" style={{ maxHeight: 'none' }}>
-          <table className="amortization-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'left' }}>呼び径</th>
-                <th>p (mm)</th>
-                <th>Hnut (mm)</th>
-                <th>Hpw (mm)</th>
-                <th>Hsw (mm)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(SPECS).map(([d, s]) => (
-                <tr key={d}>
-                  <td style={{ textAlign: 'left', fontWeight: 500 }}>{d}</td>
-                  <td>{s.p}</td>
-                  <td>{s.Hnut}</td>
-                  <td>{s.Hpw}</td>
-                  <td>{s.Hsw}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.75rem', lineHeight: 1.7 }}>
-          Hnut：JIS B 1181（スタイル1相当）｜Hpw：JIS B 1256 並形相当｜Hsw：JIS B 1251 厚さ最小値
-        </p>
       </div>
     </>
   );

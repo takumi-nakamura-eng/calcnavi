@@ -8,6 +8,7 @@ export default function Footer() {
           <Link href="/">Home</Link>
           <Link href="/tools">計算ツール</Link>
           <Link href="/articles">解説記事</Link>
+          <Link href="/about">運営情報</Link>
           <Link href="/contact">お問い合わせ</Link>
         </div>
         <div className="footer-links">

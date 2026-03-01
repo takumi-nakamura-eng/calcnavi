@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
+import type React from 'react';
 import { notFound } from 'next/navigation';
 import ArticleViewTracker from '@/app/components/ArticleViewTracker';
+import ArticleEngagementTracker from '@/app/components/ArticleEngagementTracker';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
+import MdxOutboundLink from '@/app/components/MdxOutboundLink';
 import RelatedArticles from '@/app/components/RelatedArticles';
 import RelatedTools from '@/app/components/RelatedTools';
 import AdSlot from '@/app/components/ads/AdSlot';
@@ -89,28 +93,61 @@ export default async function ArticleDetailPage({
     },
   };
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: article.meta.faq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  };
+
   return (
-    <main className="container">
+    <main className="container article-page">
       <ArticleViewTracker slug={article.meta.slug} category={article.meta.category} />
+      <ArticleEngagementTracker slug={article.meta.slug} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
 
-      <h1 className="page-title">{article.meta.title}</h1>
-      <p className="page-description">{article.meta.description}</p>
+      <Breadcrumbs
+        items={[
+          { name: 'ホーム', href: '/' },
+          { name: '解説記事', href: '/articles' },
+          { name: article.meta.title },
+        ]}
+      />
 
-      <div className="article-meta">
-        <span>公開日: {formatDate(article.meta.publishedAt)}</span>
-        <span>更新日: {formatDate(article.meta.updatedAt)}</span>
-        <span>カテゴリ: {article.meta.category}</span>
-      </div>
+      <header className="article-header">
+        <h1 className="page-title">{article.meta.title}</h1>
+        <p className="page-description">{article.meta.description}</p>
+        <div className="article-meta">
+          <span>公開日: {formatDate(article.meta.publishedAt)}</span>
+          <span>更新日: {formatDate(article.meta.updatedAt)}</span>
+          <span>カテゴリ: {article.meta.category}</span>
+        </div>
+      </header>
 
-      <article className="static-content article-content">
-        <MDXContent />
+      <article id="article-content" className="static-content article-content">
+        <MDXContent
+          components={{
+            a: (props: React.ComponentProps<'a'>) => (
+              <MdxOutboundLink {...props} source={`article:${article.meta.slug}`} />
+            ),
+          }}
+        />
       </article>
 
-      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE} className="article-ad" />
+      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE} className="article-ad" pageType="article" />
 
       <RelatedTools
         source={`article:${article.meta.slug}`}
@@ -119,6 +156,7 @@ export default async function ArticleDetailPage({
           title: tool.title,
           desc: tool.desc,
           href: tool.href,
+          diagramKey: tool.diagramKey,
         }))}
       />
 
@@ -129,6 +167,8 @@ export default async function ArticleDetailPage({
           title: item.title,
           description: item.description,
           href: item.href,
+          diagramKey: item.diagramKey,
+          thumbnailSvg: item.thumbnailSvg,
         }))}
       />
     </main>

@@ -36,6 +36,7 @@ const MATERIAL_PRESETS = [
   { label: 'カスタム',             E_GPa: null, sigmaAllow_MPa: null },
 ] as const;
 
+
 type LoadUnit   = 'kg' | 'kN';
 type ZUnit      = 'cm3' | 'mm3';
 type IUnit      = 'cm4' | 'mm4';
@@ -364,7 +365,6 @@ export default function SimpleSupportedCalculator() {
       </div>
 
       <form className="beam-form" onSubmit={handleCalculate} noValidate>
-
         {/* ① Material */}
         <section className="beam-section">
           <h2 className="beam-section-title">① 材質・ヤング率</h2>

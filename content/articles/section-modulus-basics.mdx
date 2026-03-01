@@ -1,0 +1,62 @@
+---
+title: "断面係数Zの基礎"
+description: "断面係数Zの意味、曲げ応力との関係、断面選定での使い方を実務向けに整理します。"
+publishedAt: "2026-03-02"
+updatedAt: "2026-03-02"
+category: "梁・断面"
+tags:
+  - "断面係数"
+  - "曲げ応力"
+  - "梁設計"
+toolRefs:
+  - "beam"
+  - "section-properties"
+diagramKey: "section-modulus"
+faq:
+  - q: "断面係数Zが大きいと何が良いですか？"
+    a: "同じ曲げモーメントでも曲げ応力を下げられるため、強度余裕を確保しやすくなります。"
+  - q: "ZとIの違いは何ですか？"
+    a: "Zは応力計算、Iはたわみ計算で主に使います。用途が異なる指標です。"
+---
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="断面係数の図">
+  <rect x="80" y="40" width="120" height="120" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+  <line x1="80" y1="100" x2="200" y2="100" stroke="#ef4444" stroke-width="2" stroke-dasharray="6 4" />
+  <line x1="300" y1="120" x2="460" y2="120" stroke="#111827" stroke-width="8" />
+  <line x1="380" y1="120" x2="380" y2="70" stroke="#ef4444" stroke-width="3" />
+  <text x="140" y="95" text-anchor="middle" font-size="12">中立軸</text>
+  <text x="380" y="60" text-anchor="middle" font-size="12">σ = M / Z</text>
+</svg>
+</div>
+
+## 比較表
+
+| 断面 | Z（cm³） | 同じMでの応力（相対） |
+|---|---:|---:|
+| A | 200 | 1.00 |
+| B | 300 | 0.67 |
+| C | 400 | 0.50 |
+
+## 計算例
+
+条件: 曲げモーメント `M = 12 kN·m`、断面係数 `Z = 300 cm³`。
+
+式: `σ = M / Z`（単位を N・mm に統一）
+
+計算:
+- `M = 12 × 10^6 N·mm`
+- `Z = 300 × 10^3 mm³`
+- `σ = 12 × 10^6 / 300 × 10^3 = 40 MPa`
+
+結果: 曲げ応力は **40 MPa**。
+
+## FAQ
+
+### Q1. Zの目安はどう決めますか？
+A. 許容応力と想定モーメントから逆算して必要Zを先に出すのが実務的です。
+
+### Q2. 断面性能計算ツールは何に使えますか？
+A. 形状寸法からZを素早く出し、候補断面の比較検討に使えます。

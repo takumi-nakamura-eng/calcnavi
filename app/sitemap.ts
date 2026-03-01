@@ -7,7 +7,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const fixedPaths = [
     '/',
     '/tools',
-    '/tools/loan',
     '/tools/bolt',
     '/tools/beams',
     '/tools/beams/simple-supported',
@@ -18,7 +17,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/privacy',
     '/terms',
     '/disclaimer',
-    '/history',
   ];
 
   const toolPaths = TOOLS.filter((tool) => tool.available).map((tool) => tool.href);

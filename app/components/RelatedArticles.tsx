@@ -2,12 +2,15 @@
 
 import Link from 'next/link';
 import { trackRelatedClick } from '@/lib/analytics/events';
+import CardDiagram from '@/app/components/CardDiagram';
 
 export interface RelatedArticleItem {
   slug: string;
   title: string;
   description: string;
   href: string;
+  diagramKey: string;
+  thumbnailSvg?: string;
 }
 
 export default function RelatedArticles({
@@ -37,6 +40,12 @@ export default function RelatedArticles({
                 })
               }
             >
+              <CardDiagram
+                variant="article"
+                diagramKey={article.diagramKey}
+                svgMarkup={article.thumbnailSvg}
+                className="portal-card-diagram"
+              />
               <span className="portal-card-title">{article.title}</span>
               <span className="portal-card-desc">{article.description}</span>
             </Link>

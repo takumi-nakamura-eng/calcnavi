@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Script from 'next/script';
+import { trackAdClick, trackAdImpression } from '@/lib/analytics/events';
 
 declare global {
   interface Window {
@@ -13,13 +14,17 @@ export default function AdSlot({
   slot,
   format = 'auto',
   className,
+  pageType = 'unknown',
 }: {
   slot?: string;
   format?: 'auto' | 'rectangle' | 'horizontal' | 'vertical';
   className?: string;
+  pageType?: string;
 }) {
   const enabled = process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true';
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+  const slotRef = useRef<HTMLDivElement | null>(null);
+  const hasTrackedImpressionRef = useRef(false);
 
   useEffect(() => {
     if (!enabled || !client || !slot) return;
@@ -31,10 +36,33 @@ export default function AdSlot({
     }
   }, [enabled, client, slot]);
 
+  useEffect(() => {
+    if (!enabled || !slotRef.current || !slot) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!hasTrackedImpressionRef.current && entry.isIntersecting) {
+            hasTrackedImpressionRef.current = true;
+            trackAdImpression({ slot, pageType });
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    observer.observe(slotRef.current);
+    return () => observer.disconnect();
+  }, [enabled, pageType, slot]);
+
   if (!enabled || !client || !slot) return null;
 
   return (
-    <div className={`ad-slot ${className ?? ''}`.trim()}>
+    <div
+      ref={slotRef}
+      className={`ad-slot ${className ?? ''}`.trim()}
+      onClickCapture={() => trackAdClick({ slot, pageType })}
+    >
       <Script
         id="adsense-script"
         strategy="afterInteractive"

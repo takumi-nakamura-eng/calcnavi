@@ -7,19 +7,10 @@ export interface ToolItem {
   category: string;
   keywords: string[];
   relatedArticleSlugs: string[];
+  diagramKey: string;
 }
 
 export const TOOLS: ToolItem[] = [
-  {
-    id: 'loan',
-    title: '住宅ローン計算機',
-    desc: '月々の返済額・総返済額・総利息を試算。詳細な返済スケジュール表も確認できます。',
-    href: '/tools/loan',
-    available: true,
-    category: 'ローン',
-    keywords: ['住宅ローン', '返済額', '金利', '元利均等'],
-    relatedArticleSlugs: [],
-  },
   {
     id: 'bolt-length',
     title: 'ボルト長さ計算',
@@ -29,6 +20,7 @@ export const TOOLS: ToolItem[] = [
     category: 'ねじ・締結',
     keywords: ['ボルト', 'ナット', '座金', 'ピッチ', '3山'],
     relatedArticleSlugs: ['coarse-thread', 'washer-role', 'three-threads', 'nut-basics'],
+    diagramKey: 'bolt-length',
   },
   {
     id: 'beam',
@@ -38,7 +30,13 @@ export const TOOLS: ToolItem[] = [
     available: true,
     category: '梁・断面',
     keywords: ['単純梁', 'たわみ', '曲げ応力', '断面係数', '断面二次モーメント'],
-    relatedArticleSlugs: [],
+    relatedArticleSlugs: [
+      'section-modulus-basics',
+      'allowable-stress-basics',
+      'deflection-limit-l-over-n',
+      'h-beam-vs-channel-selection',
+    ],
+    diagramKey: 'beam',
   },
   {
     id: 'section-properties',
@@ -48,7 +46,13 @@ export const TOOLS: ToolItem[] = [
     available: true,
     category: '梁・断面',
     keywords: ['断面二次モーメント', '断面係数', '断面積', '重量', 'H形鋼'],
-    relatedArticleSlugs: [],
+    relatedArticleSlugs: [
+      'section-modulus-basics',
+      'moment-of-inertia-basics',
+      'h-beam-vs-channel-selection',
+      'tube-section-weight-comparison',
+    ],
+    diagramKey: 'section-properties',
   },
   {
     id: 'anchor',
@@ -59,6 +63,7 @@ export const TOOLS: ToolItem[] = [
     category: 'ねじ・締結',
     keywords: ['アンカーボルト', '引張強度', 'せん断強度'],
     relatedArticleSlugs: [],
+    diagramKey: 'anchor',
   },
   {
     id: 'unit',
@@ -69,6 +74,7 @@ export const TOOLS: ToolItem[] = [
     category: '基礎計算',
     keywords: ['単位換算', 'mm', 'inch', 'N', 'kgf'],
     relatedArticleSlugs: [],
+    diagramKey: 'unit',
   },
 ];
 

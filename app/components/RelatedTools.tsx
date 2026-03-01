@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { trackRelatedClick } from '@/lib/analytics/events';
+import CardDiagram from '@/app/components/CardDiagram';
 
 export interface RelatedToolItem {
   id: string;
   title: string;
   desc: string;
   href: string;
+  diagramKey: string;
 }
 
 export default function RelatedTools({
@@ -37,6 +39,7 @@ export default function RelatedTools({
                 })
               }
             >
+              <CardDiagram variant="tool" diagramKey={tool.diagramKey} className="portal-card-diagram" />
               <span className="portal-card-title">{tool.title}</span>
               <span className="portal-card-desc">{tool.desc}</span>
             </Link>

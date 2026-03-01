@@ -1,0 +1,61 @@
+---
+title: "許容曲げ応力の考え方"
+description: "許容曲げ応力の基本と、梁計算でOK/NG判定に使うときの注意点をまとめます。"
+publishedAt: "2026-03-03"
+updatedAt: "2026-03-03"
+category: "梁・断面"
+tags:
+  - "許容応力"
+  - "安全率"
+  - "曲げ応力"
+toolRefs:
+  - "beam"
+diagramKey: "allowable-stress"
+faq:
+  - q: "許容応力は固定値で使ってよいですか？"
+    a: "用途・規格・荷重条件で変わるため固定値の流用は避け、基準値を都度確認してください。"
+  - q: "NG判定が出たら何を見直しますか？"
+    a: "荷重条件、断面Z、支持条件、許容応力の根拠を優先して見直します。"
+---
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="許容応力の図">
+  <rect x="80" y="60" width="400" height="24" fill="#d1fae5" />
+  <rect x="80" y="96" width="300" height="24" fill="#bfdbfe" />
+  <text x="285" y="77" text-anchor="middle" font-size="12">許容応力帯</text>
+  <text x="230" y="113" text-anchor="middle" font-size="12">実応力</text>
+  <line x1="380" y1="96" x2="380" y2="150" stroke="#ef4444" stroke-width="2" />
+  <text x="380" y="164" text-anchor="middle" font-size="12">σmax ≤ σallow</text>
+</svg>
+</div>
+
+## 比較表
+
+| ケース | σmax (MPa) | σallow (MPa) | 判定 |
+|---|---:|---:|---|
+| A | 110 | 150 | OK |
+| B | 145 | 150 | OK（余裕小） |
+| C | 165 | 150 | NG |
+
+## 計算例
+
+条件: `M = 18 kN·m`, `Z = 120 cm³`, `σallow = 150 MPa`。
+
+式: `σmax = M / Z`
+
+計算:
+- `M = 18 × 10^6 N·mm`
+- `Z = 120 × 10^3 mm³`
+- `σmax = 150 MPa`
+
+結果: **σmax = σallow** で境界。設計余裕の再確認が必要。
+
+## FAQ
+
+### Q1. 余裕率はどの程度必要ですか？
+A. 社内基準や適用規格に依存します。境界値付近は余裕を持たせるのが一般的です。
+
+### Q2. ツールの初期値をそのまま使ってよいですか？
+A. 初期値は目安です。必ず案件条件に合わせて更新してください。

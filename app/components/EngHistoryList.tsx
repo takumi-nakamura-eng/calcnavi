@@ -87,6 +87,18 @@ function EngHistoryCard({
         {r.weightKgPerM != null && (
           <span>重量 = {fmt(r.weightKgPerM, 3)} kg/m</span>
         )}
+        {r.Mmax_kNm !== undefined && (
+          <span>Mmax = {fmt(r.Mmax_kNm, 3)} kN·m</span>
+        )}
+        {r.sigmaMax_MPa !== undefined && (
+          <span>σ = {fmt(r.sigmaMax_MPa, 2)} MPa</span>
+        )}
+        {r.deltaMax_mm !== undefined && (
+          <span>δ = {fmt(r.deltaMax_mm, 2)} mm</span>
+        )}
+        {r.lBuy_mm !== undefined && (
+          <span>推奨購入長さ = {fmt(r.lBuy_mm, 0)} mm</span>
+        )}
       </div>
 
       {/* Expanded detail */}
@@ -137,6 +149,42 @@ function EngHistoryCard({
                 <div className="eng-hist-result-row">
                   <span className="eng-hist-result-label">重量</span>
                   <span className="eng-hist-result-value"><strong>{fmt(r.weightKgPerM, 3)}</strong> kg/m</span>
+                </div>
+              )}
+              {r.Mmax_kNm !== undefined && (
+                <div className="eng-hist-result-row">
+                  <span className="eng-hist-result-label">最大曲げモーメント</span>
+                  <span className="eng-hist-result-value"><strong>{fmt(r.Mmax_kNm, 3)}</strong> kN·m</span>
+                </div>
+              )}
+              {r.sigmaMax_MPa !== undefined && (
+                <div className="eng-hist-result-row">
+                  <span className="eng-hist-result-label">曲げ応力</span>
+                  <span className="eng-hist-result-value">
+                    <strong>{fmt(r.sigmaMax_MPa, 2)}</strong> MPa
+                    <span className="eng-hist-result-sub"> ({r.stressOK ? 'OK' : 'NG'})</span>
+                  </span>
+                </div>
+              )}
+              {r.deltaMax_mm !== undefined && (
+                <div className="eng-hist-result-row">
+                  <span className="eng-hist-result-label">最大たわみ</span>
+                  <span className="eng-hist-result-value">
+                    <strong>{fmt(r.deltaMax_mm, 2)}</strong> mm
+                    <span className="eng-hist-result-sub"> / 許容 {fmt(r.deltaAllow_mm ?? 0, 2)} mm ({r.deflectionOK ? 'OK' : 'NG'})</span>
+                  </span>
+                </div>
+              )}
+              {r.lRequired_mm !== undefined && (
+                <div className="eng-hist-result-row">
+                  <span className="eng-hist-result-label">必要長さ</span>
+                  <span className="eng-hist-result-value"><strong>{fmt(r.lRequired_mm, 2)}</strong> mm</span>
+                </div>
+              )}
+              {r.lBuy_mm !== undefined && (
+                <div className="eng-hist-result-row">
+                  <span className="eng-hist-result-label">推奨購入長さ</span>
+                  <span className="eng-hist-result-value"><strong>{fmt(r.lBuy_mm, 0)}</strong> mm</span>
                 </div>
               )}
             </div>

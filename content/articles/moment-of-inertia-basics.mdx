@@ -1,0 +1,57 @@
+---
+title: "断面二次モーメントIの基礎"
+description: "断面二次モーメントIの意味と、たわみ計算での使い方を実務目線で解説します。"
+publishedAt: "2026-03-02"
+updatedAt: "2026-03-02"
+category: "梁・断面"
+tags:
+  - "断面二次モーメント"
+  - "たわみ"
+  - "梁"
+toolRefs:
+  - "beam"
+  - "section-properties"
+diagramKey: "moment-of-inertia"
+faq:
+  - q: "Iが大きいと何が変わりますか？"
+    a: "同じ荷重条件ならたわみが小さくなります。"
+  - q: "Iは強度にも効きますか？"
+    a: "強度には主にZを使いますが、IとZは形状に連動して変化します。"
+---
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="断面二次モーメント図">
+  <line x1="60" y1="120" x2="500" y2="120" stroke="#1f2937" stroke-width="8" />
+  <path d="M60 120 Q280 40 500 120" fill="none" stroke="#2563eb" stroke-width="3" />
+  <text x="280" y="34" text-anchor="middle" font-size="12">Iが大きいほどたわみが小さい</text>
+  <text x="280" y="160" text-anchor="middle" font-size="12">δ ∝ 1 / I</text>
+</svg>
+</div>
+
+## 比較表
+
+| 断面 | I（cm⁴） | たわみ（相対） |
+|---|---:|---:|
+| A | 8,000 | 1.00 |
+| B | 12,000 | 0.67 |
+| C | 16,000 | 0.50 |
+
+## 計算例
+
+条件: 単純梁、中央集中荷重 `P = 8 kN`、`L = 3000 mm`、`E = 205000 MPa`、`I = 1.2×10^8 mm⁴`。
+
+式: `δmax = P×L^3 / (48×E×I)`
+
+計算: `δmax = 8000×3000^3 / (48×205000×1.2×10^8) = 1.83 mm`
+
+結果: 最大たわみは **約1.83 mm**。
+
+## FAQ
+
+### Q1. Iの単位が大きくて扱いにくいです。
+A. mm⁴で計算し、比較時はcm⁴表示に変換すると見やすくなります。
+
+### Q2. 断面選定はIだけ見ればよいですか？
+A. 応力側の確認（Z）とセットで判断してください。

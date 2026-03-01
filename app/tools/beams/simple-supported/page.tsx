@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import SimpleSupportedCalculator from './SimpleSupportedCalculator';
 import AdSlot from '@/app/components/ads/AdSlot';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 import RelatedArticles from '@/app/components/RelatedArticles';
 import { getAllArticles } from '@/lib/content/articles';
 import { getToolById } from '@/lib/data/tools';
@@ -40,18 +41,26 @@ export default async function SimpleSupportedPage() {
       name: SITE_NAME,
     },
   };
-
   return (
     <main className="container">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <Breadcrumbs
+        items={[
+          { name: 'ホーム', href: '/' },
+          { name: '計算ツール', href: '/tools' },
+          { name: '単純梁（単純支持）計算' },
+        ]}
+      />
 
       <h1 className="page-title">単純梁（単純支持）計算</h1>
       <p className="page-description">
         ピン・ローラー支持の単純梁に対して、曲げ応力・最大たわみを計算し OK/NG 判定を行います。
         中央集中荷重・等分布荷重（総荷重入力）に対応。
       </p>
+      <p className="tool-flow">入力条件 → 計算結果（OK/NG） → 途中式・履歴・PDF の順に確認できます。</p>
       <SimpleSupportedCalculator />
-      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL} className="tool-ad" />
+      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL} className="tool-ad" pageType="tool" />
       <RelatedArticles
         source="tool:beam"
         items={relatedArticles.map((article) => ({
@@ -59,6 +68,8 @@ export default async function SimpleSupportedPage() {
           title: article.title,
           description: article.description,
           href: article.href,
+          diagramKey: article.diagramKey,
+          thumbnailSvg: article.thumbnailSvg,
         }))}
       />
     </main>

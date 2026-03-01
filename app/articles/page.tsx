@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ArticlesClient from './ArticlesClient';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 import { getAllArticles } from '@/lib/content/articles';
 import { buildMetadata } from '@/lib/seo';
 
@@ -16,6 +17,7 @@ export default async function ArticlesPage() {
 
   return (
     <div className="tools-wrap">
+      <Breadcrumbs items={[{ name: 'ホーム', href: '/' }, { name: '解説記事' }]} />
       <div className="tools-page-head">
         <h1 className="tools-page-title">解説記事</h1>
         <p className="tools-page-desc">

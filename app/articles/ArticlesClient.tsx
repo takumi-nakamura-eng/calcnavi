@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { ArticleMeta } from '@/lib/content/articles';
+import CardDiagram from '@/app/components/CardDiagram';
 
 export default function ArticlesClient({
   initialArticles,
@@ -43,8 +44,14 @@ export default function ArticlesClient({
 
         {filtered.map((article) => (
           <Link key={article.slug} href={article.href} className="tools-card">
-            <span className="tools-card-title">{article.title}</span>
-            <span className="tools-card-desc">{article.description}</span>
+            <CardDiagram
+              variant="article"
+              diagramKey={article.diagramKey}
+              svgMarkup={article.thumbnailSvg}
+              className="tools-card-diagram"
+            />
+            <h3 className="tools-card-title">{article.title}</h3>
+            <p className="tools-card-desc">{article.description}</p>
           </Link>
         ))}
       </div>

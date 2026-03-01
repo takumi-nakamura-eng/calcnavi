@@ -1,0 +1,54 @@
+---
+title: "記事タイトル"
+description: "記事の概要。検索結果での説明に使います。"
+publishedAt: "2026-03-01"
+updatedAt: "2026-03-01"
+category: "梁・断面"
+tags:
+  - "キーワード1"
+  - "キーワード2"
+toolRefs:
+  - "beam"
+diagramKey: "template-diagram"
+faq:
+  - q: "質問1"
+    a: "回答1"
+  - q: "質問2"
+    a: "回答2"
+---
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="説明図">
+  <rect x="40" y="75" width="480" height="30" fill="#dbeafe" stroke="#1d4ed8" />
+  <line x1="80" y1="105" x2="80" y2="150" stroke="#6b7280" stroke-width="3" />
+  <line x1="480" y1="105" x2="480" y2="150" stroke="#6b7280" stroke-width="3" />
+  <text x="280" y="60" text-anchor="middle" font-size="14">図は1枚必須</text>
+</svg>
+</div>
+
+## 比較表
+
+| 項目 | ケースA | ケースB |
+|---|---:|---:|
+| 値1 | 100 | 150 |
+| 値2 | 20 | 18 |
+
+## 計算例
+
+条件: 例として `P = 10 kN`, `L = 2.0 m` とする。
+
+式: `M = P × L / 4`
+
+計算: `M = 10 × 2.0 / 4 = 5.0 kN·m`
+
+結果: 最大曲げモーメントは **5.0 kN·m**。
+
+## FAQ
+
+### Q1. 何を入れればよいですか？
+A. 入力条件と単位系を先に揃えてください。
+
+### Q2. 結果が合わないときは？
+A. 単位変換・境界条件・荷重条件の3点を優先確認します。

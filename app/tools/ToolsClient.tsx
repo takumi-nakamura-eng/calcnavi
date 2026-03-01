@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { TOOLS } from '@/lib/data/tools';
+import CardDiagram from '@/app/components/CardDiagram';
 
 export default function ToolsClient() {
   const searchParams = useSearchParams();
@@ -45,8 +46,9 @@ export default function ToolsClient() {
         )}
         {filtered.map((tool) => (
           <Link key={tool.id} href={tool.href} className="tools-card">
-            <span className="tools-card-title">{tool.title}</span>
-            <span className="tools-card-desc">{tool.desc}</span>
+            <CardDiagram variant="tool" diagramKey={tool.diagramKey} className="tools-card-diagram" />
+            <h3 className="tools-card-title">{tool.title}</h3>
+            <p className="tools-card-desc">{tool.desc}</p>
           </Link>
         ))}
       </div>

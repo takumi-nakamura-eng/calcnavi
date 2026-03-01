@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import HeroSearch from './home/HeroSearch';
+import CardDiagram from '@/app/components/CardDiagram';
 import { TOOLS } from '@/lib/data/tools';
 import { getAllArticles } from '@/lib/content/articles';
 import { getPageViews } from '@/lib/analytics';
@@ -9,9 +10,9 @@ import { buildMetadata } from '@/lib/seo';
 export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
-  title: 'calcnavi（計算ナビ）| 設計・施工・暮らしの計算ツール',
+  title: 'calcnavi（計算ナビ）| 機械実務の計算ツール',
   description:
-    '設計・施工・暮らしに役立つ計算ツールと解説をまとめたサイト。住宅ローン・ボルト計算など無料でご利用いただけます。',
+    '機械設計・施工に役立つ計算ツールと解説をまとめたサイト。ボルト計算・梁計算・断面性能計算を無料でご利用いただけます。',
   path: '/',
 });
 
@@ -47,7 +48,7 @@ export default async function HomePage() {
             calcnavi
             <span className="hero-title-ja">計算ナビ</span>
           </h1>
-          <p className="hero-sub">設計・施工・暮らしの計算ツールをまとめて提供</p>
+          <p className="hero-sub">機械設計・施工の計算ツールと解説をまとめて提供</p>
           <HeroSearch />
         </div>
       </section>
@@ -64,6 +65,7 @@ export default async function HomePage() {
             {sortedTools.map((tool, i) => (
               <Link key={tool.id} href={tool.href} className="tool-item">
                 <span className="tool-item-rank">{i + 1}</span>
+                <CardDiagram variant="tool" diagramKey={tool.diagramKey} className="tool-item-diagram" />
                 <span className="tool-item-body">
                   <span className="tool-item-title">{tool.title}</span>
                   <span className="tool-item-desc">{tool.desc}</span>
@@ -85,6 +87,12 @@ export default async function HomePage() {
             {sortedArticles.map((article, i) => (
               <Link key={article.slug} href={article.href} className="tool-item">
                 <span className="tool-item-rank">{i + 1}</span>
+                <CardDiagram
+                  variant="article"
+                  diagramKey={article.diagramKey}
+                  svgMarkup={article.thumbnailSvg}
+                  className="tool-item-diagram"
+                />
                 <span className="tool-item-body">
                   <span className="tool-item-title">{article.title}</span>
                   <span className="tool-item-desc">{article.description}</span>

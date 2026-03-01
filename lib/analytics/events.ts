@@ -12,6 +12,10 @@ function safeSend(eventName: string, params: Record<string, string | number>) {
   }
 }
 
+function isAdsenseEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true';
+}
+
 export function trackToolCalculate(payload: {
   toolId: string;
   category: string;
@@ -41,6 +45,29 @@ export function trackRelatedClick(payload: {
     source: payload.source,
     destination_type: payload.destinationType,
     destination_id: payload.destinationId,
+  });
+}
+
+export function trackAdImpression(payload: { slot: string; pageType: string }) {
+  if (!isAdsenseEnabled()) return;
+  safeSend('ad_impression', {
+    slot: payload.slot,
+    page_type: payload.pageType,
+  });
+}
+
+export function trackAdClick(payload: { slot: string; pageType: string }) {
+  if (!isAdsenseEnabled()) return;
+  safeSend('ad_click', {
+    slot: payload.slot,
+    page_type: payload.pageType,
+  });
+}
+
+export function trackScroll75(payload: { pageType: string; slug: string }) {
+  safeSend('scroll_75', {
+    page_type: payload.pageType,
+    slug: payload.slug,
   });
 }
 

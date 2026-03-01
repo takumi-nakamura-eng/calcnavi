@@ -1,0 +1,63 @@
+---
+title: "H形鋼とチャンネルの選び方"
+description: "H形鋼とチャンネルの使い分けを、断面性能・重量・施工性の観点で比較します。"
+publishedAt: "2026-03-04"
+updatedAt: "2026-03-04"
+category: "梁・断面"
+tags:
+  - "H形鋼"
+  - "チャンネル"
+  - "断面比較"
+toolRefs:
+  - "beam"
+  - "section-properties"
+diagramKey: "h-vs-channel"
+faq:
+  - q: "同重量ならどちらが有利ですか？"
+    a: "一般にH形鋼は強軸曲げで有利になりやすいです。"
+  - q: "チャンネルを使う理由は何ですか？"
+    a: "片側開放形状の取り合い性や施工性を優先する場面で有効です。"
+---
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hとチャンネル比較">
+  <rect x="100" y="40" width="100" height="20" fill="#dbeafe" stroke="#1d4ed8" />
+  <rect x="140" y="60" width="20" height="80" fill="#dbeafe" stroke="#1d4ed8" />
+  <rect x="100" y="140" width="100" height="20" fill="#dbeafe" stroke="#1d4ed8" />
+
+  <rect x="320" y="40" width="90" height="20" fill="#fee2e2" stroke="#dc2626" />
+  <rect x="320" y="60" width="20" height="100" fill="#fee2e2" stroke="#dc2626" />
+  <rect x="320" y="140" width="90" height="20" fill="#fee2e2" stroke="#dc2626" />
+
+  <text x="150" y="28" text-anchor="middle" font-size="12">H形鋼</text>
+  <text x="365" y="28" text-anchor="middle" font-size="12">チャンネル</text>
+</svg>
+</div>
+
+## 比較表
+
+| 項目 | H形鋼 | チャンネル |
+|---|---|---|
+| 強軸剛性 | 高い | 中程度 |
+| 取り合い性 | 標準 | 片側開放で有利 |
+| ねじれ耐性 | 比較的高い | 低め |
+
+## 計算例
+
+条件: 候補A(H)の `Ix = 8.5×10^7 mm⁴`、候補B(C)の `Ix = 6.0×10^7 mm⁴`。
+
+式: たわみ比 `δB / δA = IxA / IxB`
+
+計算: `δB / δA = 8.5 / 6.0 = 1.42`
+
+結果: 同条件ならチャンネル案は **約1.4倍たわみやすい**。
+
+## FAQ
+
+### Q1. 最初の当たり付けはどうしますか？
+A. 断面性能計算でI/Zを比較し、梁計算で応力・たわみを同時確認します。
+
+### Q2. チャンネルの注意点は？
+A. ねじれや偏心取り付けの影響を見落とさないことが重要です。

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
@@ -33,6 +34,13 @@ const BEAM_TOOLS = [
 export default function BeamsPage() {
   return (
     <main className="container">
+      <Breadcrumbs
+        items={[
+          { name: 'ホーム', href: '/' },
+          { name: '計算ツール', href: '/tools' },
+          { name: '梁計算ツール' },
+        ]}
+      />
       <h1 className="page-title">梁計算ツール</h1>
       <p className="page-description">
         各種支持条件・荷重パターンの梁計算ツールです。曲げ応力・最大たわみの OK/NG 判定まで行えます。

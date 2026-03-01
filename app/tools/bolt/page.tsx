@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import BoltCalculator from './BoltCalculator';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 import RelatedArticles from '@/app/components/RelatedArticles';
 import AdSlot from '@/app/components/ads/AdSlot';
 import { getAllArticles } from '@/lib/content/articles';
@@ -65,7 +66,6 @@ export default async function BoltPage() {
       },
     ],
   };
-
   return (
     <main className="container">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -73,17 +73,25 @@ export default async function BoltPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <Breadcrumbs
+        items={[
+          { name: 'ホーム', href: '/' },
+          { name: '計算ツール', href: '/tools' },
+          { name: 'ボルト長さ計算' },
+        ]}
+      />
 
       <h1 className="page-title">ボルト長さ計算</h1>
       <p className="page-description">
         ナット・座金の組み合わせから、先端3山確保に必要なボルト長さと推奨購入長さを計算します（M6〜M24）。
       </p>
+      <p className="tool-flow">入力条件 → 計算結果 → 途中式・PDF出力 の順で確認できます。</p>
       <BoltCalculator />
       <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '2rem', lineHeight: 1.7 }}>
         ※ 本ツールの結果は参考値です。最終確認は規格・メーカー・専門家にお問い合わせください。
       </p>
 
-      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL} className="tool-ad" />
+      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL} className="tool-ad" pageType="tool" />
 
       <RelatedArticles
         source="tool:bolt-length"
@@ -92,6 +100,8 @@ export default async function BoltPage() {
           title: article.title,
           description: article.description,
           href: article.href,
+          diagramKey: article.diagramKey,
+          thumbnailSvg: article.thumbnailSvg,
         }))}
       />
     </main>
