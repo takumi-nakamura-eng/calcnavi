@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: '梁計算ツール一覧',
   description:
     '単純梁・片持ち梁などの梁計算ツールをまとめたページです。曲げ応力・たわみをかんたんに計算できます。',
-};
+  path: '/tools/beams',
+});
 
 const BEAM_TOOLS = [
   {

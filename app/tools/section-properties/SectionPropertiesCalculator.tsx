@@ -15,6 +15,7 @@ import {
   type EngHistoryEntry,
 } from '@/lib/engHistory';
 import { printEngReport } from '@/lib/printReport';
+import { trackToolCalculate } from '@/lib/analytics/events';
 import { SectionDiagram } from './SectionDiagram';
 
 // ─── Material density presets ─────────────────────────────────────────────────
@@ -137,6 +138,7 @@ export default function SectionPropertiesCalculator() {
     });
 
     setCommittedResult({ result, weightKgPerM, steps, shapeName: currentDef.label, dims, material: materialLabel, entry });
+    trackToolCalculate({ toolId: 'section-properties', category: '梁・断面' });
   }
 
   // ─────────────────────────────────────────────────────────────────────────

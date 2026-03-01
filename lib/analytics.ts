@@ -12,22 +12,27 @@ export async function getPageViews(paths: string[]): Promise<Record<string, numb
     },
   });
 
-  const [response] = await client.runReport({
-    property: `properties/${GA_PROPERTY_ID}`,
-    dateRanges: [{ startDate: '28daysAgo', endDate: 'today' }],
-    dimensions: [{ name: 'pagePath' }],
-    metrics: [{ name: 'views' }],
-    dimensionFilter: {
-      orGroup: {
-        expressions: paths.map((path) => ({
-          filter: {
-            fieldName: 'pagePath',
-            stringFilter: { value: path, matchType: 'EXACT' },
-          },
-        })),
+  let response;
+  try {
+    [response] = await client.runReport({
+      property: `properties/${GA_PROPERTY_ID}`,
+      dateRanges: [{ startDate: '28daysAgo', endDate: 'today' }],
+      dimensions: [{ name: 'pagePath' }],
+      metrics: [{ name: 'views' }],
+      dimensionFilter: {
+        orGroup: {
+          expressions: paths.map((path) => ({
+            filter: {
+              fieldName: 'pagePath',
+              stringFilter: { value: path, matchType: 'EXACT' },
+            },
+          })),
+        },
       },
-    },
-  });
+    });
+  } catch {
+    return {};
+  }
 
   const views: Record<string, number> = {};
   for (const row of response.rows ?? []) {

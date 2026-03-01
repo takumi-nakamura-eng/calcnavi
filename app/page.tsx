@@ -2,20 +2,22 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import HeroSearch from './home/HeroSearch';
 import { TOOLS } from '@/lib/data/tools';
-import { ARTICLES } from '@/lib/data/articles';
+import { getAllArticles } from '@/lib/content/articles';
 import { getPageViews } from '@/lib/analytics';
+import { buildMetadata } from '@/lib/seo';
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'calcnavi（計算ナビ）| 設計・施工・暮らしの計算ツール',
   description:
     '設計・施工・暮らしに役立つ計算ツールと解説をまとめたサイト。住宅ローン・ボルト計算など無料でご利用いただけます。',
-};
+  path: '/',
+});
 
 export default async function HomePage() {
   const availableTools = TOOLS.filter((t) => t.available);
-  const availableArticles = ARTICLES.filter((a) => a.available);
+  const availableArticles = await getAllArticles();
 
   const paths = [
     ...availableTools.map((t) => t.href),
@@ -26,14 +28,14 @@ export default async function HomePage() {
   try {
     views = await getPageViews(paths);
   } catch {
-    // GA API 未設定またはエラー時は配列順（新しい順）のままにする
+    views = {};
   }
 
   const sortedTools = [...availableTools].sort(
-    (a, b) => (views[b.href] ?? 0) - (views[a.href] ?? 0)
+    (a, b) => (views[b.href] ?? 0) - (views[a.href] ?? 0),
   );
   const sortedArticles = [...availableArticles].sort(
-    (a, b) => (views[b.href] ?? 0) - (views[a.href] ?? 0)
+    (a, b) => (views[b.href] ?? 0) - (views[a.href] ?? 0),
   );
 
   return (
@@ -54,7 +56,9 @@ export default async function HomePage() {
         <section className="home-section">
           <div className="home-section-head">
             <h2 className="home-section-title">人気のツール</h2>
-            <Link href="/tools" className="home-section-link">すべて見る →</Link>
+            <Link href="/tools" className="home-section-link">
+              すべて見る →
+            </Link>
           </div>
           <div className="tool-list">
             {sortedTools.map((tool, i) => (
@@ -73,15 +77,17 @@ export default async function HomePage() {
         <section className="home-section">
           <div className="home-section-head">
             <h2 className="home-section-title">人気の記事</h2>
-            <Link href="/articles" className="home-section-link">すべて見る →</Link>
+            <Link href="/articles" className="home-section-link">
+              すべて見る →
+            </Link>
           </div>
           <div className="tool-list">
             {sortedArticles.map((article, i) => (
-              <Link key={article.id} href={article.href} className="tool-item">
+              <Link key={article.slug} href={article.href} className="tool-item">
                 <span className="tool-item-rank">{i + 1}</span>
                 <span className="tool-item-body">
                   <span className="tool-item-title">{article.title}</span>
-                  <span className="tool-item-desc">{article.desc}</span>
+                  <span className="tool-item-desc">{article.description}</span>
                 </span>
                 <span className="tool-item-arrow">›</span>
               </Link>

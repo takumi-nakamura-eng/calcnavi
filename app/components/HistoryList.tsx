@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useState } from 'react';
 import type { HistoryEntry } from '@/lib/types';
 import { loadHistory, deleteHistoryEntry, clearHistory } from '@/lib/storage';
 
@@ -17,11 +18,7 @@ const fmtDate = (ts: number) =>
   });
 
 export default function HistoryList() {
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-
-  useEffect(() => {
-    setHistory(loadHistory());
-  }, []);
+  const [history, setHistory] = useState<HistoryEntry[]>(() => loadHistory());
 
   const handleDelete = (id: string) => {
     if (!confirm('この計算履歴を削除しますか？')) return;
@@ -39,9 +36,9 @@ export default function HistoryList() {
     return (
       <div className="empty-state">
         <p>計算履歴がありません。</p>
-        <a href="/" className="btn-primary">
+        <Link href="/" className="btn-primary">
           計算してみる
-        </a>
+        </Link>
       </div>
     );
   }

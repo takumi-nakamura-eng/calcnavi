@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useState } from 'react';
 import {
   loadEngHistory,
   deleteEngHistoryEntry,
@@ -163,11 +164,7 @@ function HistResultRow({ label, mm, unitMm, toCm, unitCm, dec }: {
 // ─── List ─────────────────────────────────────────────────────────────────────
 
 export default function EngHistoryList() {
-  const [history, setHistory] = useState<EngHistoryEntry[]>([]);
-
-  useEffect(() => {
-    setHistory(loadEngHistory());
-  }, []);
+  const [history, setHistory] = useState<EngHistoryEntry[]>(() => loadEngHistory());
 
   function handleDelete(id: string) {
     if (!confirm('この計算履歴を削除しますか？')) return;
@@ -185,7 +182,7 @@ export default function EngHistoryList() {
     return (
       <div className="eng-history-empty">
         <p>工学計算の履歴がまだありません。</p>
-        <a href="/tools/section-properties" className="btn-primary">断面性能を計算する</a>
+        <Link href="/tools/section-properties" className="btn-primary">断面性能を計算する</Link>
       </div>
     );
   }

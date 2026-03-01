@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackToolCalculate } from '@/lib/analytics/events';
 
 type Diameter = 'M6' | 'M8' | 'M10' | 'M12' | 'M16' | 'M20' | 'M24';
 
@@ -66,6 +67,7 @@ export default function BoltCalculator() {
         { label: '先端余長 (3p)', value: tip },
       ],
     });
+    trackToolCalculate({ toolId: 'bolt-length', category: 'ねじ・締結' });
   }
 
   return (

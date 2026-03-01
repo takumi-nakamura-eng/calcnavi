@@ -24,6 +24,7 @@ import {
 import { buildBeamFormulaSteps } from '@/lib/beams/beamFormulas';
 import { addEngHistoryEntry, type EngHistoryEntry } from '@/lib/engHistory';
 import { printEngReport } from '@/lib/printReport';
+import { trackToolCalculate } from '@/lib/analytics/events';
 import BeamDiagram from './BeamDiagram';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -329,6 +330,7 @@ export default function SimpleSupportedCalculator() {
       formulaSteps: steps,
     });
     setLastEntry(entry);
+    trackToolCalculate({ toolId: 'beam', category: '梁・断面' });
   }
 
   // ── Display helpers ───────────────────────────────────────────────────────

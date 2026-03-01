@@ -9,6 +9,7 @@ import type {
 } from '@/lib/types';
 import { calculateLoan, generateAmortizationSchedule } from '@/lib/calculator';
 import { addHistoryEntry } from '@/lib/storage';
+import { trackToolCalculate } from '@/lib/analytics/events';
 import AmortizationTable from './AmortizationTable';
 
 function validate(data: LoanFormData): LoanFormErrors {
@@ -89,6 +90,7 @@ export default function LoanCalculator() {
       totalInterest: loanResult.totalInterest,
     });
     setSaved(true);
+    trackToolCalculate({ toolId: 'loan', category: 'ローン' });
   };
 
   return (

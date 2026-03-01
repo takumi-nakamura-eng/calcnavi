@@ -2,15 +2,16 @@ import type { Metadata } from 'next';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'calcnavi | 計算ツールと解説まとめ',
-    template: '%s | calcnavi',
+    default: `${SITE_NAME} | 計算ツールと解説まとめ`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    '計算ツールと解説をまとめたサイトです。ローン計算・ボルト計算などを無料で提供しています。',
+  description: SITE_DESCRIPTION,
   verification: {
     google: '_s1QVEtZdDk23z5f3faZKgRjWDcR1MuOGDZd_35LFDk',
   },

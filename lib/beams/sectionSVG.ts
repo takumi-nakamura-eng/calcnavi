@@ -176,7 +176,6 @@ function channelSVG(): string {
   const by = ty + H;
   const cx_shape = ox + B / 2;
   const ny = ty + H / 2;
-  const hw_s = H - 2 * tf;
 
   const pts = [
     [ox, ty], [ox + B, ty], [ox + B, ty + tf], [ox + tw, ty + tf],
