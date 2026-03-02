@@ -15,15 +15,29 @@ function BoltSketch() {
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="240" height="140" rx="14" fill="url(#bolt-bg)" />
-      <polygon points="40,72 62,55 92,55 92,89 62,89" fill="#64748b" />
-      <rect x="92" y="63" width="100" height="18" rx="6" fill="#475569" />
-      <line x1="105" y1="63" x2="105" y2="81" stroke="#cbd5e1" strokeWidth="1.5" />
-      <line x1="118" y1="63" x2="118" y2="81" stroke="#cbd5e1" strokeWidth="1.5" />
-      <line x1="131" y1="63" x2="131" y2="81" stroke="#cbd5e1" strokeWidth="1.5" />
-      <line x1="144" y1="63" x2="144" y2="81" stroke="#cbd5e1" strokeWidth="1.5" />
-      <line x1="157" y1="63" x2="157" y2="81" stroke="#cbd5e1" strokeWidth="1.5" />
-      <line x1="170" y1="63" x2="170" y2="81" stroke="#cbd5e1" strokeWidth="1.5" />
-      <circle cx="201" cy="72" r="12" fill="#94a3b8" />
+
+      <polygon points="30,46 50,46 56,54 56,86 50,94 30,94 24,86 24,54" fill="#94a3b8" stroke="#334155" strokeWidth="1.2" />
+      <rect x="50" y="63" width="132" height="14" rx="2" fill="#64748b" stroke="#334155" strokeWidth="1" />
+      <rect x="50" y="49" width="62" height="42" fill="#dbeafe" stroke="#1d4ed8" strokeWidth="1.2" />
+      <rect x="112" y="43" width="7" height="54" fill="#cbd5e1" stroke="#334155" strokeWidth="1" />
+      <rect x="119" y="46" width="7" height="48" fill="#e2e8f0" stroke="#334155" strokeDasharray="3 2" strokeWidth="1" />
+      <polygon points="126,52 154,52 160,58 160,82 154,88 126,88" fill="#a3b8cf" stroke="#334155" strokeWidth="1.1" />
+
+      <line x1="162" y1="63" x2="162" y2="77" stroke="#cbd5e1" strokeWidth="1.2" />
+      <line x1="167" y1="63" x2="167" y2="77" stroke="#cbd5e1" strokeWidth="1.2" />
+      <line x1="172" y1="63" x2="172" y2="77" stroke="#cbd5e1" strokeWidth="1.2" />
+      <line x1="177" y1="63" x2="177" y2="77" stroke="#cbd5e1" strokeWidth="1.2" />
+      <line x1="182" y1="63" x2="182" y2="77" stroke="#cbd5e1" strokeWidth="1.2" />
+
+      <line x1="50" y1="32" x2="182" y2="32" stroke="#334155" strokeWidth="1" />
+      <line x1="50" y1="29" x2="50" y2="35" stroke="#334155" strokeWidth="1" />
+      <line x1="182" y1="29" x2="182" y2="35" stroke="#334155" strokeWidth="1" />
+      <text x="116" y="26" textAnchor="middle" fontSize="9.5" fill="#1f2937" fontWeight="700">L_required</text>
+
+      <line x1="160" y1="108" x2="182" y2="108" stroke="#334155" strokeWidth="1" />
+      <line x1="160" y1="105" x2="160" y2="111" stroke="#334155" strokeWidth="1" />
+      <line x1="182" y1="105" x2="182" y2="111" stroke="#334155" strokeWidth="1" />
+      <text x="171" y="121" textAnchor="middle" fontSize="9" fill="#1f2937" fontWeight="700">&gt;3p</text>
     </svg>
   );
 }

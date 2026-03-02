@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { addEngHistoryEntry, type EngHistoryEntry, type FormulaStep } from '@/lib/engHistory';
 import { printEngReport } from '@/lib/printReport';
 import { trackToolCalculate } from '@/lib/analytics/events';
-import { BOLT_CALC_SPECS, M12_REFERENCE_NOTE, type Diameter } from '@/lib/bolts/specs';
+import { BOLT_CALC_SPECS, type Diameter } from '@/lib/bolts/specs';
 import BoltDimensionDiagram from './BoltDimensionDiagram';
 
 function parseIntegerInRange(
@@ -160,15 +160,6 @@ export default function BoltCalculator() {
     <>
       <div className="beam-diagram-wrapper">
         <BoltDimensionDiagram />
-        <p className="beam-note" style={{ marginTop: '0.75rem', marginBottom: 0 }}>
-          図の寸法値はM12基準です。
-        </p>
-        <p className="beam-note" style={{ marginTop: '0.25rem', marginBottom: 0 }}>
-          計算は選択した呼び径の値を使用します。
-        </p>
-        <p className="beam-note" style={{ marginTop: '0.25rem', marginBottom: 0 }}>
-          {M12_REFERENCE_NOTE}
-        </p>
       </div>
 
       <form className="loan-form" onSubmit={handleSubmit} noValidate>

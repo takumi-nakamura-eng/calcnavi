@@ -139,7 +139,7 @@ function buildBoltReport(entry: EngHistoryEntry): string {
 ${buildFormulaSteps(entry)}
 <h2>④ 計算結果</h2>
 <table><tbody>${resultRows}</tbody></table>
-<div class="disclaimer">本計算書は参考値です。実調達時はJIS規格・メーカー寸法を必ず確認してください。図解寸法はM12概略であり、製品寸法差を含みます。</div>
+<div class="disclaimer">本計算書は参考値です。実調達時はJIS規格・メーカー寸法を必ず確認してください。</div>
 <div class="footer">calcnavi / tools/bolt</div>
 </body></html>`;
 }
