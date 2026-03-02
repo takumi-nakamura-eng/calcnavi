@@ -1,73 +1,151 @@
 ---
-title: "断面二次モーメントIの基礎"
-description: "断面二次モーメントIの意味と、たわみ計算での使い方を実務目線で解説します。"
+title: "断面二次モーメントIの使い方: まず何を確認すべきか"
+description: "断面二次モーメントIで、たわみをどう判定するかを分岐表と再現計算例で整理します。"
 publishedAt: "2026-03-02"
 updatedAt: "2026-03-02"
 category: "梁・断面"
 tags:
   - "断面二次モーメント"
   - "たわみ"
-  - "梁"
+  - "梁設計"
 toolRefs:
   - "beam"
   - "section-properties"
 diagramKey: "moment-of-inertia"
 faq:
-  - q: "Iが大きいと何が変わりますか？"
-    a: "同じ荷重条件ならたわみが小さくなります。"
-  - q: "Iは強度にも効きますか？"
-    a: "強度には主にZを使いますが、IとZは形状に連動して変化します。"
+  - q: "Iが大きいほど、なぜ有利ですか？"
+    a: "同じ荷重・スパン・材料なら、最大たわみはIに反比例して小さくなります。"
+  - q: "Iだけ見れば断面を決められますか？"
+    a: "最終決定は不可です。応力（Z）・接合・座屈・重量・施工性を必ず同時確認します。"
 sources:
-  - title: "JIS規格票・機械要素の基本"
-    url: "https://kikakurui.com/"
-    site: "規格一覧"
-    accessedAt: "2026-03-01"
-    note: "関連JISの用語と規格番号確認に使用"
+  - title: "Engineering ToolBox: Beam Deflection and Stress Formula"
+    url: "https://www.engineeringtoolbox.com/beam-stress-deflection-d_1312.html"
+    site: "Engineering ToolBox"
+    accessedAt: "2026-03-02"
+    note: "カテゴリ: 工学技術資料。単純梁の中央集中荷重で使うたわみ式の確認に使用。"
+    quote: "For a simply supported beam with center load, y = F L3 / 48 E I."
+  - title: "国土交通省 建築構造設計基準（平成22年版）"
+    url: "https://www.mlit.go.jp/gobuild/gobuild_tk2_000017.html"
+    site: "国土交通省"
+    accessedAt: "2026-03-02"
+    note: "カテゴリ: 公的資料。構造設計で基準・規準に従って検討する前提の確認に使用。"
+    quote: "建築物の構造設計に関し、必要な技術的基準を定める。"
+  - title: "日本建築学会 鋼構造設計規準"
+    url: "https://www.aij.or.jp/paper/detail.html?productId=623"
+    site: "日本建築学会"
+    accessedAt: "2026-03-02"
+    note: "カテゴリ: 学協会資料。鋼部材の使用性検討における実務参照先として使用。"
+    quote: "鋼構造設計における規準・指針を提供する。"
   - title: "MISUMI 技術情報"
     url: "https://jp.misumi-ec.com/tech-info/"
     site: "MISUMI"
-    accessedAt: "2026-03-01"
-    note: "機械部品の実務解説と選定観点"
-  - title: "SMC 技術資料"
-    url: "https://www.smcworld.com/webcatalog/ja/"
-    site: "SMC"
-    accessedAt: "2026-03-01"
-    note: "機械設計時の一般的な実務注意点の確認"
+    accessedAt: "2026-03-02"
+    note: "カテゴリ: メーカー技術資料。設備設計での実務的な断面選定観点の確認に使用。"
+    quote: "設計・選定に使える技術情報を掲載。"
 ---
+
+## この記事でわかること
+
+- 断面二次モーメントIを、どの場面で使うべきか
+- Iの候補値をどう絞り、たわみOK/NGをどう判定するか
+- 迷ったときの判断順序（基準優先、保守側採用）
+
+## 結論
+
+断面二次モーメントIは、梁の「たわみ」を判断する指標です。  
+同じ条件ならIが大きいほどたわみは小さくなります。  
+ただし最終判断はI単独ではなく、規格・契約条件・応力確認とセットで行います。  
+指定が競合するときは、より厳しい条件を優先します。
 
 ## 図解
 
 <div className="diagram-card">
-<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="断面二次モーメント図">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="断面二次モーメントとたわみの関係">
   <line x1="60" y1="120" x2="500" y2="120" stroke="#1f2937" stroke-width="8" />
-  <path d="M60 120 Q280 40 500 120" fill="none" stroke="#2563eb" stroke-width="3" />
-  <text x="280" y="34" text-anchor="middle" font-size="12">Iが大きいほどたわみが小さい</text>
-  <text x="280" y="160" text-anchor="middle" font-size="12">δ ∝ 1 / I</text>
+  <path d="M60 120 Q280 46 500 120" fill="none" stroke="#2563eb" stroke-width="3" />
+  <line x1="280" y1="120" x2="280" y2="165" stroke="#dc2626" stroke-width="2" />
+  <text x="280" y="34" text-anchor="middle" font-size="12">Iが大きいほど最大たわみδは小さい</text>
+  <text x="280" y="184" text-anchor="middle" font-size="12">単純梁中央集中荷重: δ = P L^3 / (48 E I)</text>
 </svg>
 </div>
 
-## 比較表
+## 比較表（分岐）
 
-| 断面 | I（cm⁴） | たわみ（相対） |
-|---|---:|---:|
-| A | 8,000 | 1.00 |
-| B | 12,000 | 0.67 |
-| C | 16,000 | 0.50 |
+| まず確認する条件 | Yes のとき | No のとき |
+|---|---|---|
+| 契約図書・仕様書にたわみ制限が明記されているか | 指定値を最優先で採用 | 次の条件へ |
+| 適用規格/社内標準に制限値があるか | その値を採用 | 初期検討は L/300 で仮置き |
+| 取合い・見た目・芯ずれに厳しいか | 保守側として厳しいn値と大きいIを選ぶ | コスト・重量とのバランスで候補化 |
+| 応力や接合も同時に満足するか | 採用候補として確定 | 断面を再選定（Iだけで決めない） |
 
 ## 計算例
 
-条件: 単純梁、中央集中荷重 `P = 8 kN`、`L = 3000 mm`、`E = 205000 MPa`、`I = 1.2×10^8 mm⁴`。
+入力（再現用）:
 
-式: `δmax = P×L^3 / (48×E×I)`
+- 支持条件: 単純支持
+- 荷重: 中央集中荷重 `P = 12 kN`
+- スパン: `L = 3500 mm`
+- ヤング率: `E = 205000 MPa`
+- 断面二次モーメント: `I = 900 cm⁴ = 9.0 x 10^6 mm⁴`
+- 判定条件: `L/300`
 
-計算: `δmax = 8000×3000^3 / (48×205000×1.2×10^8) = 1.83 mm`
+計算:
 
-結果: 最大たわみは **約1.83 mm**。
+- 最大たわみ `δ = P L^3 / (48 E I)`
+- `δ = 12000 x 3500^3 / (48 x 205000 x 9.0 x 10^6)`
+- `δ = 5.83 mm`
+- 許容たわみ `δ_allow = L/300 = 3500/300 = 11.67 mm`
+
+判定:
+
+- **OK**（`5.83 <= 11.67`）
+
+## 落とし穴
+
+- `cm⁴` と `mm⁴` を混在させて、Iを10000倍ずらしてしまう
+- 支持条件を単純梁で計算し、実際は片持ち梁だった
+- たわみはOKでも、曲げ応力・接合・座屈を未確認のまま採用する
+- 仕様書に明記された制限値より、緩い社内慣例を優先してしまう
+
+## 判断基準
+
+優先順位は次で固定します。  
+`契約/発注仕様 > 規格・学協会基準 > メーカー資料 > 社内標準 > 仮置き値`  
+迷う場合は、より厳しい側（保守側）を採用します。
 
 ## FAQ
 
-### Q1. Iの単位が大きくて扱いにくいです。
-A. mm⁴で計算し、比較時はcm⁴表示に変換すると見やすくなります。
+### Q1. 断面係数ZとIはどちらを優先すべきですか？
+A. 用途が異なります。たわみ評価はI、曲げ応力評価はZです。実務では同時に満たす断面を選びます。
 
-### Q2. 断面選定はIだけ見ればよいですか？
-A. 応力側の確認（Z）とセットで判断してください。
+### Q2. 初期設計でIの目安を早く出すには？
+A. まず想定たわみ制限（例: L/300）を置き、たわみ式から必要Iを逆算して候補断面を絞ると早いです。
+
+## 関連ツール
+
+<a href="/tools/beams/simple-supported" className="tool-item article-tool-item">
+  <CardDiagram variant="tool" diagramKey="beam" className="tool-item-diagram" />
+  <span className="tool-item-body">
+    <span className="tool-item-title">単純梁（単純支持）計算</span>
+    <span className="tool-item-desc">荷重・スパン・断面性能から、応力とたわみを同時判定します。</span>
+  </span>
+  <span className="tool-item-arrow">›</span>
+</a>
+
+<a href="/tools/section-properties" className="tool-item article-tool-item">
+  <CardDiagram variant="tool" diagramKey="section-properties" className="tool-item-diagram" />
+  <span className="tool-item-body">
+    <span className="tool-item-title">断面性能計算（I/Z/A）</span>
+    <span className="tool-item-desc">寸法入力から断面二次モーメントIと断面係数Zを算出します。</span>
+  </span>
+  <span className="tool-item-arrow">›</span>
+</a>
+
+<a href="/articles/deflection-limit-l-over-n" className="tool-item article-tool-item">
+  <CardDiagram variant="article" diagramKey="deflection-limit" className="tool-item-diagram" />
+  <span className="tool-item-body">
+    <span className="tool-item-title">許容たわみL/nの選び分け</span>
+    <span className="tool-item-desc">L/200・L/300・L/400を用途別に判断する基準を確認できます。</span>
+  </span>
+  <span className="tool-item-arrow">›</span>
+</a>
