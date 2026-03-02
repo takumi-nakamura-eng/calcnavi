@@ -7,69 +7,68 @@ interface CardDiagramProps {
 
 function BoltSketch() {
   return (
-    <svg viewBox="0 0 520 270" aria-hidden="true">
-      <rect x="0" y="0" width="520" height="270" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
-      <line x1="52" y1="126" x2="470" y2="126" stroke="#94a3b8" strokeDasharray="4 3" />
+    <svg viewBox="0 0 620 260" aria-hidden="true">
+      <rect x="0" y="0" width="620" height="260" rx="12" fill="#f8fafc" stroke="#cbd5e1" />
+      <line x1="90" y1="132" x2="530" y2="132" stroke="#94a3b8" strokeDasharray="4 3" />
 
-      <polygon
-        points="76,93 106,93 115,105 115,147 106,159 76,159 67,147 67,105"
-        fill="#94a3b8"
-        stroke="#334155"
-        strokeWidth="1.4"
-      />
-      <rect x="106" y="114" width="188" height="24" fill="#64748b" stroke="#334155" strokeWidth="1" />
-      <rect x="106" y="92" width="92" height="68" fill="#dbeafe" stroke="#1d4ed8" strokeWidth="1.3" />
-      <rect x="198" y="82" width="12" height="88" fill="#cbd5e1" stroke="#334155" strokeWidth="1.2" />
-      <rect x="210" y="87" width="12" height="78" fill="#e2e8f0" stroke="#334155" strokeDasharray="4 2" strokeWidth="1.2" />
-      <polygon
-        points="222,96 268,96 276,106 276,146 268,156 222,156"
-        fill="#a3b8cf"
-        stroke="#334155"
-        strokeWidth="1.3"
-      />
+      <polygon points="214,98 248,98 259,112 259,152 248,166 214,166 203,152 203,112" fill="#94a3b8" stroke="#334155" strokeWidth="1.4" />
+      <rect x="248" y="120" width="166" height="24" fill="#64748b" stroke="#334155" strokeWidth="1" />
 
-      <line x1="280" y1="114" x2="280" y2="138" stroke="#cbd5e1" strokeWidth="1.1" />
-      <line x1="286" y1="114" x2="286" y2="138" stroke="#cbd5e1" strokeWidth="1.1" />
-      <line x1="292" y1="114" x2="292" y2="138" stroke="#cbd5e1" strokeWidth="1.1" />
-      <line x1="298" y1="114" x2="298" y2="138" stroke="#cbd5e1" strokeWidth="1.1" />
-      <line x1="304" y1="114" x2="304" y2="138" stroke="#cbd5e1" strokeWidth="1.1" />
-      <line x1="310" y1="114" x2="310" y2="138" stroke="#cbd5e1" strokeWidth="1.1" />
+      <rect x="248" y="92" width="70" height="80" fill="#dbeafe" stroke="#1d4ed8" strokeWidth="1.3" />
 
-      <text x="91" y="84" textAnchor="middle" fontSize="10" fill="#334155" fontWeight={700}>ボルト頭</text>
-      <text x="152" y="84" textAnchor="middle" fontSize="10" fill="#1d4ed8" fontWeight={700}>締結体</text>
-      <text x="204" y="74" textAnchor="middle" fontSize="10" fill="#334155" fontWeight={700}>平座金</text>
-      <text x="224" y="74" textAnchor="middle" fontSize="10" fill="#334155" fontWeight={700}>ばね座金</text>
-      <text x="249" y="88" textAnchor="middle" fontSize="10" fill="#334155" fontWeight={700}>ナット</text>
+      <rect x="318" y="96" width="12" height="72" fill="#cbd5e1" stroke="#334155" strokeWidth="1.2" />
+      <rect x="330" y="100" width="12" height="64" fill="#e2e8f0" stroke="#334155" strokeDasharray="4 2" strokeWidth="1.2" />
 
-      <line x1="106" y1="54" x2="328" y2="54" stroke="#334155" strokeWidth="1.1" />
-      <line x1="106" y1="50" x2="106" y2="58" stroke="#334155" strokeWidth="1.1" />
-      <line x1="328" y1="50" x2="328" y2="58" stroke="#334155" strokeWidth="1.1" />
-      <text x="217" y="67" textAnchor="middle" fontSize="11" fill="#1f2937" fontWeight={700}>L_required（首下長さ）</text>
+      <polygon points="342,104 394,104 402,114 402,150 394,160 342,160" fill="#a3b8cf" stroke="#334155" strokeWidth="1.3" />
 
-      <line x1="294" y1="184" x2="328" y2="184" stroke="#334155" strokeWidth="1.1" />
-      <line x1="294" y1="180" x2="294" y2="188" stroke="#334155" strokeWidth="1.1" />
-      <line x1="328" y1="180" x2="328" y2="188" stroke="#334155" strokeWidth="1.1" />
-      <text x="311" y="197" textAnchor="middle" fontSize="11" fill="#1f2937" fontWeight={700}>&gt;3p</text>
+      <line x1="394" y1="120" x2="394" y2="144" stroke="#cbd5e1" strokeWidth="1.1" />
+      <line x1="399" y1="120" x2="399" y2="144" stroke="#cbd5e1" strokeWidth="1.1" />
+      <line x1="404" y1="120" x2="404" y2="144" stroke="#cbd5e1" strokeWidth="1.1" />
+      <line x1="409" y1="120" x2="409" y2="144" stroke="#cbd5e1" strokeWidth="1.1" />
+      <line x1="414" y1="120" x2="414" y2="144" stroke="#cbd5e1" strokeWidth="1.1" />
 
-      <line x1="106" y1="200" x2="198" y2="200" stroke="#334155" strokeWidth="1.1" />
-      <line x1="106" y1="196" x2="106" y2="204" stroke="#334155" strokeWidth="1.1" />
-      <line x1="198" y1="196" x2="198" y2="204" stroke="#334155" strokeWidth="1.1" />
-      <text x="152" y="213" textAnchor="middle" fontSize="11" fill="#1f2937" fontWeight={700}>t</text>
+      <text x="231" y="88" textAnchor="middle" fontSize="12" fill="#334155" fontWeight={700}>ボルト</text>
+      <text x="283" y="88" textAnchor="middle" fontSize="12" fill="#1d4ed8" fontWeight={700}>締結体</text>
 
-      <line x1="198" y1="216" x2="210" y2="216" stroke="#334155" strokeWidth="1.1" />
-      <line x1="198" y1="212" x2="198" y2="220" stroke="#334155" strokeWidth="1.1" />
-      <line x1="210" y1="212" x2="210" y2="220" stroke="#334155" strokeWidth="1.1" />
-      <text x="204" y="229" textAnchor="middle" fontSize="11" fill="#1f2937" fontWeight={700}>Hpw</text>
+      <text x="306" y="64" textAnchor="end" fontSize="11" fill="#334155" fontWeight={700}>平座金</text>
+      <line x1="307" y1="68" x2="324" y2="96" stroke="#334155" strokeWidth="1" />
 
-      <line x1="210" y1="232" x2="222" y2="232" stroke="#334155" strokeWidth="1.1" />
-      <line x1="210" y1="228" x2="210" y2="236" stroke="#334155" strokeWidth="1.1" />
-      <line x1="222" y1="228" x2="222" y2="236" stroke="#334155" strokeWidth="1.1" />
-      <text x="216" y="245" textAnchor="middle" fontSize="11" fill="#1f2937" fontWeight={700}>Hsw</text>
+      <text x="352" y="64" textAnchor="start" fontSize="11" fill="#334155" fontWeight={700}>ばね座金</text>
+      <line x1="354" y1="68" x2="336" y2="100" stroke="#334155" strokeWidth="1" />
 
-      <line x1="222" y1="248" x2="268" y2="248" stroke="#334155" strokeWidth="1.1" />
-      <line x1="222" y1="244" x2="222" y2="252" stroke="#334155" strokeWidth="1.1" />
-      <line x1="268" y1="244" x2="268" y2="252" stroke="#334155" strokeWidth="1.1" />
-      <text x="245" y="261" textAnchor="middle" fontSize="11" fill="#1f2937" fontWeight={700}>Hnut</text>
+      <text x="368" y="96" textAnchor="middle" fontSize="12" fill="#334155" fontWeight={700}>ナット</text>
+
+      <line x1="248" y1="34" x2="414" y2="34" stroke="#334155" strokeWidth="1.1" />
+      <line x1="248" y1="30" x2="248" y2="38" stroke="#334155" strokeWidth="1.1" />
+      <line x1="414" y1="30" x2="414" y2="38" stroke="#334155" strokeWidth="1.1" />
+      <text x="331" y="24" textAnchor="middle" fontSize="12" fill="#1f2937" fontWeight={700}>L_required（首下長さ）</text>
+
+      <line x1="248" y1="212" x2="318" y2="212" stroke="#334155" strokeWidth="1.1" />
+      <line x1="248" y1="208" x2="248" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <line x1="318" y1="208" x2="318" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <text x="283" y="226" textAnchor="middle" fontSize="12" fill="#1f2937" fontWeight={700}>t</text>
+
+      <line x1="318" y1="212" x2="330" y2="212" stroke="#334155" strokeWidth="1.1" />
+      <line x1="318" y1="208" x2="318" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <line x1="330" y1="208" x2="330" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <text x="308" y="198" textAnchor="middle" fontSize="12" fill="#1f2937" fontWeight={700}>Hpw</text>
+      <line x1="312" y1="201" x2="324" y2="209" stroke="#334155" strokeWidth="1" />
+
+      <line x1="330" y1="212" x2="342" y2="212" stroke="#334155" strokeWidth="1.1" />
+      <line x1="330" y1="208" x2="330" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <line x1="342" y1="208" x2="342" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <text x="354" y="198" textAnchor="middle" fontSize="12" fill="#1f2937" fontWeight={700}>Hsw</text>
+      <line x1="350" y1="201" x2="336" y2="209" stroke="#334155" strokeWidth="1" />
+
+      <line x1="342" y1="212" x2="394" y2="212" stroke="#334155" strokeWidth="1.1" />
+      <line x1="342" y1="208" x2="342" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <line x1="394" y1="208" x2="394" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <text x="368" y="226" textAnchor="middle" fontSize="12" fill="#1f2937" fontWeight={700}>Hnut</text>
+
+      <line x1="394" y1="212" x2="414" y2="212" stroke="#334155" strokeWidth="1.1" />
+      <line x1="394" y1="208" x2="394" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <line x1="414" y1="208" x2="414" y2="216" stroke="#334155" strokeWidth="1.1" />
+      <text x="404" y="226" textAnchor="middle" fontSize="12" fill="#1f2937" fontWeight={700}>&gt;3p</text>
     </svg>
   );
 }
