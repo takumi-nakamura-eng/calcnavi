@@ -4,7 +4,7 @@
  * Max entries: 100
  */
 
-export type EngToolId = 'section-properties' | 'simple-beam' | 'bolt-length';
+export type EngToolId = 'section-properties' | 'simple-beam' | 'bolt-length' | 'cantilever';
 
 export interface FormulaStep {
   label: string;

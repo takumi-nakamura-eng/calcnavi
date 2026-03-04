@@ -1,0 +1,94 @@
+---
+title: "鋼材の機械的性質まとめ（SS400・SUS304）"
+description: "機械設計で頻出の鋼材（SS400・SM490・SUS304等）のヤング率・降伏点・許容応力を早見表にまとめます。"
+publishedAt: "2026-03-04"
+updatedAt: "2026-03-04"
+category: "梁・断面"
+tags:
+  - "鋼材"
+  - "SS400"
+  - "SUS304"
+  - "ヤング率"
+  - "許容応力"
+toolRefs:
+  - "section-properties"
+diagramKey: "steel-material-properties"
+faq:
+  - q: "SS400の『400』は何を意味しますか？"
+    a: "引張強さの下限値400 MPaを示します。降伏点は板厚によって異なり、t≤16mmで245 MPa以上です。"
+  - q: "ヤング率は鋼種によって変わりますか？"
+    a: "炭素鋼・低合金鋼はほぼ共通で205 GPa前後です。ステンレスは193 GPa、アルミは69 GPaと材質で異なります。"
+sources:
+  - title: "JIS G 3101 一般構造用圧延鋼材"
+    url: "https://kikakurui.com/"
+    site: "規格一覧"
+    accessedAt: "2026-03-01"
+    note: "SS400の規格値確認に使用"
+  - title: "MISUMI 技術情報"
+    url: "https://jp.misumi-ec.com/tech-info/"
+    site: "MISUMI"
+    accessedAt: "2026-03-01"
+    note: "各鋼材の機械的性質の実務データ参照"
+  - title: "鋼構造設計規準（AIJ）"
+    url: "https://www.aij.or.jp/"
+    site: "日本建築学会"
+    accessedAt: "2026-03-01"
+    note: "鋼材の許容応力値の根拠規準"
+---
+
+梁や柱の設計計算では、鋼材のヤング率・降伏点・許容応力が入力値として必要です。鋼種ごとに値が異なるため、ここでは実務で頻出の鋼材をまとめます。計算ツールの材質プリセットの根拠としても参照できます。
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="応力-ひずみ曲線の概念図">
+  {/* 軸 */}
+  <line x1="80" y1="170" x2="500" y2="170" stroke="#374151" strokeWidth="1.5" />
+  <line x1="80" y1="170" x2="80" y2="20" stroke="#374151" strokeWidth="1.5" />
+  <text x="500" y="188" textAnchor="end" fontSize="11" fill="#374151">ひずみ ε</text>
+  <text x="72" y="20" textAnchor="end" fontSize="11" fill="#374151">応力 σ</text>
+  {/* SS400カーブ */}
+  <polyline points="80,170 200,70 220,68 240,65 350,50 450,40" fill="none" stroke="#2563eb" strokeWidth="2.5" />
+  <text x="460" y="38" fontSize="11" fontWeight="bold" fill="#2563eb">SS400</text>
+  {/* 降伏点ライン */}
+  <line x1="80" y1="70" x2="210" y2="70" stroke="#ef4444" strokeWidth="1" strokeDasharray="4 3" />
+  <text x="70" y="74" textAnchor="end" fontSize="10" fill="#ef4444">σ_y</text>
+  {/* 引張強さライン */}
+  <line x1="80" y1="40" x2="460" y2="40" stroke="#16a34a" strokeWidth="1" strokeDasharray="4 3" />
+  <text x="70" y="44" textAnchor="end" fontSize="10" fill="#16a34a">σ_u</text>
+  {/* 許容応力ライン */}
+  <line x1="80" y1="110" x2="160" y2="110" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="6 3" />
+  <text x="170" y="114" fontSize="10" fill="#f59e0b">許容応力 σ_allow</text>
+  {/* ラベル */}
+  <text x="280" y="195" textAnchor="middle" fontSize="10" fill="#64748b">降伏点σ_y以下の弾性範囲で設計する</text>
+</svg>
+</div>
+
+## 比較表
+
+| 鋼種 | 規格 | ヤング率 E (GPa) | 降伏点 σ_y (MPa) | 引張強さ σ_u (MPa) | 許容曲げ応力 目安 (MPa) |
+|---|---|---:|---:|---:|---:|
+| SS400 | JIS G 3101 | 205 | 245 | 400〜510 | 150 |
+| SM490 | JIS G 3106 | 205 | 325 | 490〜610 | 210 |
+| SUS304 | JIS G 4304 | 193 | 205 | 520 | 130 |
+| A6063-T5（参考） | JIS H 4100 | 69 | 110 | 150 | 80 |
+
+※ SS400の降伏点はt≤16mm時。許容応力は安全率1.5〜1.7程度の目安で、適用規準により異なります。
+
+## 計算例
+
+条件: SS400、梁の最大曲げモーメント `M = 20 kN·m = 20×10⁶ N·mm`、許容曲げ応力 `σ_allow = 150 MPa`。
+
+式: 必要断面係数 `Z_req = M / σ_allow`
+
+計算: `Z_req = 20×10⁶ / 150 = 133333 mm³ = 133.3 cm³`
+
+結果: 必要断面係数は **133.3 cm³** 以上。H-200×100×5.5×8（Z = 184 cm³）なら OK。
+
+## FAQ
+
+### Q1. SM490はSS400よりどのくらい強いですか？
+A. 降伏点が約1.33倍（325/245）、引張強さが約1.2倍です。同じ断面で許容応力を上げられるため、部材のコンパクト化に有効です。
+
+### Q2. ステンレスは炭素鋼より弱いのですか？
+A. SUS304はヤング率が低く（193 vs 205 GPa）、降伏点も低め（205 vs 245 MPa）なので、同断面では炭素鋼よりたわみやすく、曲がりやすくなります。耐食性とのトレードオフで選定します。
