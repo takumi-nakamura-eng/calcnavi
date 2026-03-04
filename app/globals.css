@@ -2401,3 +2401,180 @@ body {
   align-items: center;
   gap: 1rem;
 }
+
+/* ===== Steel Weight Calculator ===== */
+
+.sw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-table th {
+  background: var(--bg);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.5rem 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border);
+}
+
+.sw-table td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.sw-table tbody tr:hover {
+  background: var(--primary-light);
+}
+
+.sw-dim-cell {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.sw-weight-cell {
+  font-weight: 700;
+}
+
+.sw-note-cell {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.sw-total-row {
+  background: var(--bg);
+}
+
+.sw-total-row td {
+  border-bottom: none;
+  border-top: 2px solid var(--primary);
+  padding: 0.625rem 0.5rem;
+}
+
+.sw-edit-row {
+  background: #fffbeb;
+}
+
+.sw-edit-row td {
+  padding: 0.5rem;
+}
+
+.sw-edit-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.sw-edit-fields .form-group {
+  gap: 0.2rem;
+}
+
+.sw-edit-fields .form-group label {
+  font-size: 0.6875rem;
+}
+
+.sw-edit-fields .form-group input,
+.sw-edit-fields .form-group select {
+  height: 2rem;
+  font-size: 0.75rem;
+  padding: 0 0.4rem;
+}
+
+/* ── Small action buttons ── */
+.sw-small-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.sw-small-btn:hover {
+  background: var(--bg);
+}
+
+.sw-small-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sw-small-btn--primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.sw-small-btn--primary:hover {
+  background: var(--primary-dark);
+}
+
+.sw-small-btn--danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.sw-small-btn--danger:hover {
+  background: #fef2f2;
+}
+
+/* ── Total summary bar ── */
+.sw-total-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--primary);
+  color: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+}
+
+.sw-total-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.sw-total-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-total-unit {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .sw-table {
+    font-size: 0.75rem;
+  }
+  .sw-table th,
+  .sw-table td {
+    padding: 0.3rem 0.35rem;
+  }
+  .sw-note-cell {
+    max-width: 60px;
+  }
+  .sw-total-summary {
+    padding: 0.75rem 1rem;
+  }
+  .sw-total-value {
+    font-size: 1.25rem;
+  }
+}

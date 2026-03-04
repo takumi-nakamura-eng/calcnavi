@@ -72,6 +72,17 @@ export const TOOLS: ToolItem[] = [
     diagramKey: 'cantilever',
   },
   {
+    id: 'steel-weight',
+    title: '鋼材重量計算',
+    desc: '平板・丸棒・角棒・丸パイプ・角パイプの重量を計算し、明細テーブルで合計重量を管理します。',
+    href: '/tools/steel-weight',
+    available: true,
+    category: '材料・重量',
+    keywords: ['鋼材', '重量', '自重', '密度', '材料拾い', 'kg'],
+    relatedArticleSlugs: ['steel-material-properties', 'allowable-stress-basics'],
+    diagramKey: 'steel-weight',
+  },
+  {
     id: 'anchor',
     title: 'アンカーボルト強度計算',
     desc: 'アンカーボルトの引張・せん断強度を試算します。',
