@@ -83,6 +83,17 @@ export const TOOLS: ToolItem[] = [
     diagramKey: 'steel-weight',
   },
   {
+    id: 'bolt-strength',
+    title: 'ボルト引張・せん断耐力計算',
+    desc: '締結用ボルトの許容引張耐力・許容せん断耐力を即時計算。強度区分4.8/8.8/10.9、M6〜M24対応。',
+    href: '/tools/bolt-strength',
+    available: true,
+    category: 'ねじ・締結',
+    keywords: ['ボルト', '引張耐力', 'せん断耐力', '強度区分', '相互作用'],
+    relatedArticleSlugs: ['bolt-strength-class', 'bolt-strength-class-selection', 'allowable-stress-basics', 'nut-basics'],
+    diagramKey: 'bolt-strength',
+  },
+  {
     id: 'anchor',
     title: 'アンカーボルト強度計算',
     desc: 'アンカーボルトの引張・せん断強度を試算します。',
