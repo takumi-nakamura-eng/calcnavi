@@ -21,7 +21,7 @@ const BEAM_TOOLS = [
     href: '/tools/beams/cantilever',
     title: '片持ち梁（カンチレバー）',
     desc: '固定端・自由端の片持ち梁に対して、集中荷重・等分布荷重の曲げ応力・たわみを計算します。',
-    available: false,
+    available: true,
   },
   {
     href: '/tools/beams/fixed-fixed',

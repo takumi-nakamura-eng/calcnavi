@@ -1,0 +1,103 @@
+---
+title: "片持ち梁の基本と計算の流れ"
+description: "片持ち梁（カンチレバー）の支持条件・公式・使いどころを解説。固定端モーメントと自由端たわみの計算例つき。"
+publishedAt: "2026-03-04"
+updatedAt: "2026-03-04"
+category: "梁・断面"
+tags:
+  - "片持ち梁"
+  - "カンチレバー"
+  - "たわみ"
+  - "曲げモーメント"
+toolRefs:
+  - "beam"
+diagramKey: "cantilever-beam"
+faq:
+  - q: "片持ち梁と単純梁はどちらがたわみやすいですか？"
+    a: "同じスパン・荷重条件なら片持ち梁の方がたわみが大きくなります。集中荷重先端で約16倍の差があります。"
+  - q: "片持ち梁の許容たわみ基準はどう決めますか？"
+    a: "用途によりますが、一般にL/150〜L/250が目安です。先端に精密機器がある場合はL/300以上にすることもあります。"
+sources:
+  - title: "JIS規格票・構造設計の基本"
+    url: "https://kikakurui.com/"
+    site: "規格一覧"
+    accessedAt: "2026-03-01"
+    note: "梁の設計に関するJIS用語の確認に使用"
+  - title: "MISUMI 技術情報"
+    url: "https://jp.misumi-ec.com/tech-info/"
+    site: "MISUMI"
+    accessedAt: "2026-03-01"
+    note: "片持ち梁の実務設計例と選定の確認"
+  - title: "鋼構造設計規準（AIJ）"
+    url: "https://www.aij.or.jp/"
+    site: "日本建築学会"
+    accessedAt: "2026-03-01"
+    note: "許容たわみ・許容応力の根拠規準の確認"
+---
+
+片持ち梁（カンチレバー）は一端が**固定**、もう一端が**自由**な支持条件の梁です。庇（ひさし）、看板ブラケット、機械のアーム部など片側からしか支持できない構造に使われます。固定端に最大曲げモーメント、自由端に最大たわみが発生するのが特徴です。
+
+## 図解
+
+<div className="diagram-card">
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="片持ち梁の模式図">
+  {/* 壁（固定端）ハッチング */}
+  <rect x="60" y="40" width="20" height="120" fill="#d1d5db" stroke="#374151" strokeWidth="1.5" />
+  <line x1="60" y1="40" x2="80" y2="60" stroke="#9ca3af" strokeWidth="1" />
+  <line x1="60" y1="60" x2="80" y2="80" stroke="#9ca3af" strokeWidth="1" />
+  <line x1="60" y1="80" x2="80" y2="100" stroke="#9ca3af" strokeWidth="1" />
+  <line x1="60" y1="100" x2="80" y2="120" stroke="#9ca3af" strokeWidth="1" />
+  <line x1="60" y1="120" x2="80" y2="140" stroke="#9ca3af" strokeWidth="1" />
+  <line x1="60" y1="140" x2="80" y2="160" stroke="#9ca3af" strokeWidth="1" />
+  {/* 梁 */}
+  <rect x="80" y="93" width="340" height="14" fill="#2563eb" rx="2" />
+  {/* 荷重矢印（先端集中） */}
+  <line x1="420" y1="40" x2="420" y2="90" stroke="#dc2626" strokeWidth="2.5" />
+  <polygon points="420,92 414,80 426,80" fill="#dc2626" />
+  <text x="420" y="32" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#dc2626">P</text>
+  {/* スパン寸法線 */}
+  <line x1="80" y1="130" x2="420" y2="130" stroke="#374151" strokeWidth="1" />
+  <line x1="80" y1="125" x2="80" y2="135" stroke="#374151" strokeWidth="1" />
+  <line x1="420" y1="125" x2="420" y2="135" stroke="#374151" strokeWidth="1" />
+  <text x="250" y="148" textAnchor="middle" fontSize="11" fontWeight="bold" fill="#374151">L</text>
+  {/* ラベル */}
+  <text x="52" y="105" textAnchor="middle" fontSize="10" fill="#555">固定端</text>
+  <text x="420" y="115" textAnchor="middle" fontSize="10" fill="#555">自由端</text>
+  {/* 固定端反力表示 */}
+  <text x="100" y="180" fontSize="10" fill="#374151">M_fix = P×L（固定端モーメント）</text>
+  <text x="100" y="195" fontSize="10" fill="#374151">δ_max（自由端たわみ）</text>
+</svg>
+</div>
+
+## 比較表
+
+| 項目 | 単純梁（中央集中） | 片持ち梁（先端集中） | 倍率 |
+|---|---|---|---|
+| 最大曲げモーメント | PL/4 | PL | 4倍 |
+| 最大たわみ | PL³/48EI | PL³/3EI | 16倍 |
+| モーメント位置 | スパン中央 | 固定端 | — |
+| たわみ位置 | スパン中央 | 自由端 | — |
+
+## 計算例
+
+条件: 先端集中荷重 `P = 5 kN = 5000 N`、スパン `L = 1000 mm`、`E = 205 GPa = 205000 MPa`、`I = 1640 cm⁴ = 16400000 mm⁴`、`Z = 219 cm³ = 219000 mm³`。
+
+式:
+- `M_max = P × L`
+- `σ_max = M_max / Z`
+- `δ_max = P × L³ / (3 × E × I)`
+
+計算:
+- `M_max = 5000 × 1000 = 5000000 N·mm = 5.0 kN·m`
+- `σ_max = 5000000 / 219000 = 22.8 MPa`
+- `δ_max = 5000 × 1000³ / (3 × 205000 × 16400000) = 0.50 mm`
+
+結果: σ_max = **22.8 MPa**（許容150MPaならOK）、δ_max = **0.50 mm**。
+
+## FAQ
+
+### Q1. 片持ち梁でたわみが大きすぎるときの対策は？
+A. 断面二次モーメント I を上げる（断面サイズアップ）、スパンを短くする、支持条件を変える（中間サポート追加で単純梁化）のいずれかが有効です。
+
+### Q2. 等分布荷重の場合の公式は？
+A. `M_max = wL²/2`（固定端）、`δ_max = wL⁴/(8EI)`（自由端）です。w は線荷重 [N/mm] で、総荷重 W を L で割って求めます。
