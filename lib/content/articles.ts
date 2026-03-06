@@ -7,7 +7,6 @@ import { evaluate } from '@mdx-js/mdx';
 import * as runtime from 'react/jsx-runtime';
 
 const ARTICLES_DIR = path.join(process.cwd(), 'content/articles');
-const DRAFTS_DIR_NAME = '_drafts';
 const MAX_QUOTE_LENGTH = 120;
 
 export interface ArticleFaqItem {
@@ -162,15 +161,9 @@ function toPosixPath(value: string): string {
 export function isPublicArticle(target: string | Pick<ArticleMeta, 'slug'>): boolean {
   const raw = typeof target === 'string' ? target : target.slug;
   const normalized = toPosixPath(raw).replace(/\.mdx$/, '');
-  const segments = normalized.split('/').filter(Boolean);
-  const basename = segments[segments.length - 1] ?? '';
-  if (segments.includes(DRAFTS_DIR_NAME)) return false;
+  const basename = normalized.split('/').filter(Boolean).pop() ?? '';
   if (basename.startsWith('_')) return false;
   return true;
-}
-
-function isDraftArticlePath(relativePath: string): boolean {
-  return !isPublicArticle(relativePath);
 }
 
 async function listMdxFilesRecursively(
@@ -319,11 +312,7 @@ function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: stri
   };
 }
 
-function validateSources(
-  slug: string,
-  sources: ArticleSource[],
-  opts: { isDraft: boolean },
-): void {
+function validateSources(slug: string, sources: ArticleSource[]): void {
   const issues: string[] = [];
 
   if (sources.length < 3) {
@@ -344,24 +333,11 @@ function validateSources(
 
   if (issues.length === 0) return;
 
-  const message = `Article ${slug}.mdx has invalid sources: ${issues.join(', ')}`;
-  if (opts.isDraft) {
-    console.warn(`[draft-warning] ${message}`);
-    return;
-  }
-  throw new Error(message);
+  throw new Error(`Article ${slug}.mdx has invalid sources: ${issues.join(', ')}`);
 }
 
-function validateArticleContent(
-  slug: string,
-  meta: ParsedFrontmatter,
-  body: string,
-  opts: { isDraft: boolean },
-): void {
-  validateSources(slug, meta.sources, opts);
-
-  if (opts.isDraft) return;
-
+function validateArticleContent(slug: string, meta: ParsedFrontmatter, body: string): void {
+  validateSources(slug, meta.sources);
   const missing: string[] = [];
 
   if (!meta.title.trim()) missing.push('title');
@@ -406,7 +382,7 @@ async function readArticleFile(slug: string): Promise<Article | null> {
   const filePath = path.join(ARTICLES_DIR, `${slug}.mdx`);
   const source = await fs.readFile(filePath, 'utf8');
   const { data, body } = parseFrontmatter(source);
-  validateArticleContent(slug, data, body, { isDraft: false });
+  validateArticleContent(slug, data, body);
 
   return {
     meta: {
@@ -419,24 +395,7 @@ async function readArticleFile(slug: string): Promise<Article | null> {
   };
 }
 
-const warnDraftArticles = cache(async () => {
-  const allFiles = await listMdxFilesRecursively(ARTICLES_DIR);
-  const draftFiles = allFiles.filter((file) => isDraftArticlePath(file));
-  for (const relPath of draftFiles) {
-    const slug = relPath.replace(/\.mdx$/, '');
-    try {
-      const source = await fs.readFile(path.join(ARTICLES_DIR, relPath), 'utf8');
-      const { data, body } = parseFrontmatter(source);
-      validateArticleContent(slug, data, body, { isDraft: true });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn(`[draft-warning] Failed to validate ${slug}.mdx: ${message}`);
-    }
-  }
-});
-
 export const getAllArticles = cache(async (): Promise<ArticleMeta[]> => {
-  await warnDraftArticles();
   const allFiles = await listMdxFilesRecursively(ARTICLES_DIR);
   const slugs = allFiles
     .filter((file) => isPublicArticle(file))
