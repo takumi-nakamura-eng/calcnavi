@@ -2,7 +2,7 @@ import type { EngHistoryEntry } from './engHistory';
 import { fmt } from './beams/units';
 import { getSectionSVGString } from './beams/sectionSVG';
 import type { SectionShape } from './beams/sections';
-import { getBoltSVGString } from './bolts/boltSVG';
+import { getBoltLengthSvgString } from './bolts/boltLengthSvg';
 
 function fmtDate(ts: number): string {
   return new Date(ts).toLocaleString('ja-JP', {
@@ -116,7 +116,7 @@ ${buildFormulaSteps(entry)}
 
 function buildBoltReport(entry: EngHistoryEntry): string {
   const r = entry.results;
-  const svg = getBoltSVGString();
+  const svg = getBoltLengthSvgString();
   const inputRows = [
     `<tr><th>呼び径</th><td>${entry.inputs.diameter ?? '-'}</td></tr>`,
     ...Object.entries(entry.inputs.dims).map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`),

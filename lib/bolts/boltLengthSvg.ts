@@ -13,7 +13,7 @@ function hdim(x1: number, x2: number, y: number, label: string): string {
   <text x="${cx}" y="${y + 13}" text-anchor="middle" font-size="11" fill="#1f2937" font-weight="700">${label}</text>`;
 }
 
-export function getBoltSvgMarkup(options: BoltSvgMarkupOptions = {}): string {
+export function getBoltLengthSvgMarkup(options: BoltSvgMarkupOptions = {}): string {
   const {
     width = 420,
     height = 176,
@@ -88,6 +88,6 @@ export function getBoltSvgMarkup(options: BoltSvgMarkupOptions = {}): string {
   </svg>`;
 }
 
-export function getBoltSVGString(): string {
-  return getBoltSvgMarkup();
+export function getBoltLengthSvgString(): string {
+  return getBoltLengthSvgMarkup();
 }
