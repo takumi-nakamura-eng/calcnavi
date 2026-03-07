@@ -14,6 +14,7 @@ export default function CardDiagram({ diagramKey, variant, className }: CardDiag
         diagramKey={diagramKey}
         width="100%"
         height="100%"
+        renderContext={variant === 'tool' ? 'card' : 'default'}
         framed={false}
         ariaHidden
         role="presentation"

@@ -318,29 +318,43 @@ body {
   margin-bottom: 0;
   border: 0;
   background: transparent;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(6.8rem, max-content));
+  gap: 0.55rem 0.65rem;
+  justify-content: start;
 }
 
 .bolt-length-form .form-group {
-  gap: 0.3rem;
+  gap: 0.22rem;
 }
 
 .bolt-length-form .form-group label {
-  font-size: 0.8125rem;
+  font-size: 0.76rem;
+}
+
+.bolt-length-form__field {
+  max-width: 8.2rem;
+}
+
+.bolt-length-form__field--diameter {
+  max-width: 6.8rem;
+}
+
+.bolt-length-form__field--thickness {
+  max-width: 8.8rem;
 }
 
 .bolt-length-form .form-group input,
 .bolt-length-form .form-group select {
-  height: 2.5rem;
-  padding: 0 0.75rem;
+  height: 2.1rem;
+  padding: 0 0.58rem;
   border-color: #c9d7e7;
   background: #f7fbff;
-  font-size: 0.95rem;
+  font-size: 0.86rem;
 }
 
 .bolt-length-form .form-group input::placeholder {
   color: #8a9aab;
+  font-size: 0.82rem;
 }
 
 .bolt-length-form .form-group input:focus,
@@ -354,7 +368,8 @@ body {
 
 .bolt-length-form .form-submit-row {
   grid-column: 1 / -1;
-  margin-top: 0.25rem;
+  margin-top: 0.1rem;
+  gap: 0.65rem;
 }
 
 .error-message {
@@ -990,8 +1005,6 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.76);
   overflow: hidden;
   isolation: isolate;
-  outline: 1px dashed rgba(34, 197, 94, 0.55);
-  outline-offset: -1px;
 }
 
 .tool-hero::before {
@@ -1025,14 +1038,16 @@ body {
 
 .tool-hero__content {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  align-self: stretch;
 }
 
 .tool-hero__content-inner {
   display: flex;
   flex-direction: column;
   gap: 0.28rem;
-  border: 1px solid rgba(37, 99, 235, 0.4);
 }
 
 .tool-hero__title {
@@ -1086,14 +1101,12 @@ body {
   align-items: center;
   justify-content: center;
   align-self: stretch;
-  min-height: 0;
   overflow: hidden;
-  border: 1px solid rgba(220, 38, 38, 0.45);
 }
 
 .tool-hero__diagram {
   width: auto;
-  max-width: 120px;
+  max-width: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1108,6 +1121,7 @@ body {
 .tool-hero__diagram svg {
   width: auto;
   height: 100%;
+  min-height: 144px;
   max-width: 100%;
   max-height: 100%;
   display: block;
@@ -1388,12 +1402,13 @@ body {
 
   .tool-hero__diagram {
     width: 100%;
-    max-width: 100px;
+    max-width: 140px;
     height: auto;
   }
 
   .tool-hero__diagram svg {
     height: auto;
+    min-height: 110px;
     max-width: 100%;
     max-height: none;
   }
@@ -1405,10 +1420,6 @@ body {
 
   .tool-workbench__section {
     padding: 0.9rem;
-  }
-
-  .bolt-length-form {
-    grid-template-columns: 1fr;
   }
 
   .bolt-length-result-cards {
@@ -1906,11 +1917,16 @@ body {
   border-radius: 0.5rem;
   overflow: hidden;
   background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tool-item-diagram svg {
-  width: 100%;
+  width: auto;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   display: block;
 }
 
@@ -2145,11 +2161,16 @@ body {
   border-radius: 0.75rem;
   overflow: hidden;
   background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tools-card-diagram svg {
-  width: 100%;
+  width: auto;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   display: block;
 }
 

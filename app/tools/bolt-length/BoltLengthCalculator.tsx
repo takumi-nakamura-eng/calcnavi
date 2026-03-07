@@ -128,7 +128,7 @@ export default function BoltLengthCalculator() {
         </div>
 
         <form className="loan-form bolt-length-form" onSubmit={handleSubmit} noValidate>
-          <div className="form-group">
+          <div className="form-group bolt-length-form__field bolt-length-form__field--diameter">
             <label htmlFor="diam">呼び径</label>
             <select id="diam" value={diam} onChange={(e) => setDiam(e.target.value as Diameter)}>
               {(Object.keys(BOLT_CALC_SPECS) as Diameter[]).map((d) => (
@@ -137,7 +137,7 @@ export default function BoltLengthCalculator() {
             </select>
           </div>
 
-          <div className="form-group">
+          <div className="form-group bolt-length-form__field bolt-length-form__field--thickness">
             <label htmlFor="thickness">締結厚さ t (mm)</label>
             <input
               id="thickness"
@@ -155,7 +155,7 @@ export default function BoltLengthCalculator() {
             {tError && <span className="error-message">{tError}</span>}
           </div>
 
-          <div className="form-group">
+          <div className="form-group bolt-length-form__field">
             <label htmlFor="nNut">六角ナット N (枚)</label>
             <input
               id="nNut"
@@ -173,7 +173,7 @@ export default function BoltLengthCalculator() {
             {nError && <span className="error-message">{nError}</span>}
           </div>
 
-          <div className="form-group">
+          <div className="form-group bolt-length-form__field">
             <label htmlFor="nPw">平座金 PW (枚)</label>
             <input
               id="nPw"
@@ -191,7 +191,7 @@ export default function BoltLengthCalculator() {
             {pwError && <span className="error-message">{pwError}</span>}
           </div>
 
-          <div className="form-group">
+          <div className="form-group bolt-length-form__field">
             <label htmlFor="nSw">ばね座金 SW (枚)</label>
             <input
               id="nSw"

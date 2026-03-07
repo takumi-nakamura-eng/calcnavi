@@ -9,6 +9,7 @@ export interface BoltLengthSvgProps {
   ariaHidden?: boolean;
   framed?: boolean;
   className?: string;
+  renderContext?: 'default' | 'hero' | 'card';
 }
 
 const BOLT_LENGTH_COLORS = {
@@ -82,12 +83,14 @@ export function BoltLengthSvg({
   ariaHidden,
   framed = true,
   className,
+  renderContext = 'default',
 }: BoltLengthSvgProps) {
   const style = buildSvgStyle({ maxWidth, framed });
+  const viewBox = renderContext === 'card' ? '160 12 340 248' : '188 66 256 132';
 
   return (
     <svg
-      viewBox="194 72 244 120"
+      viewBox={viewBox}
       preserveAspectRatio="xMidYMid meet"
       width={width}
       height={height}
@@ -161,6 +164,7 @@ interface BoltSvgMarkupOptions {
   height?: number | string;
   maxWidth?: number;
   includeXmlns?: boolean;
+  renderContext?: 'default' | 'hero' | 'card';
 }
 
 function hdim(x1: number, x2: number, y: number, label: string): string {
@@ -177,11 +181,13 @@ export function getBoltLengthSvgMarkup(options: BoltSvgMarkupOptions = {}): stri
     height = 240,
     maxWidth,
     includeXmlns = true,
+    renderContext = 'default',
   } = options;
   const maxWidthStyle = maxWidth !== undefined ? `;max-width:${maxWidth}px` : ';max-width:100%';
   const xmlns = includeXmlns ? ' xmlns="http://www.w3.org/2000/svg"' : '';
+  const viewBox = renderContext === 'card' ? '160 12 340 248' : '188 66 256 132';
 
-  return `<svg viewBox="194 72 244 120" preserveAspectRatio="xMidYMid meet"${xmlns} width="${width}" height="${height}" aria-label="ボルト締結の概略図" style="display:block${maxWidthStyle};background:${BOLT_LENGTH_COLORS.frameFill};border:1px solid ${BOLT_LENGTH_COLORS.frameStroke};border-radius:6px;">
+  return `<svg viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet"${xmlns} width="${width}" height="${height}" aria-label="ボルト締結の概略図" style="display:block${maxWidthStyle};background:${BOLT_LENGTH_COLORS.frameFill};border:1px solid ${BOLT_LENGTH_COLORS.frameStroke};border-radius:6px;">
   <line x1="198" y1="132" x2="422" y2="132" stroke="${BOLT_LENGTH_COLORS.centerline}" stroke-dasharray="1 1" stroke-width="1"/>
   <polygon points="214,98 248,98 259,112 259,152 248,166 214,166 203,152 203,112" fill="${BOLT_LENGTH_COLORS.head}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-width="1.4"/>
   <rect x="248" y="120" width="166" height="24" fill="${BOLT_LENGTH_COLORS.shank}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-width="1"/>

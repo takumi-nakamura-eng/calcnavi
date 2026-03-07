@@ -40,8 +40,9 @@ export default function ToolHero({
             kind="tool"
             diagramKey={diagramKey}
             width="100%"
-            maxWidth={120}
-            framed
+            maxWidth={180}
+            renderContext="hero"
+            framed={false}
             ariaHidden
             role="presentation"
           />
