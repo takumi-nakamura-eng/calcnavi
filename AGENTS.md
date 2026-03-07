@@ -1,38 +1,42 @@
 # calcnavi AGENTS
 
-## Development Rules
+## 開発ルール
 
-This file is the canonical development ruleset for Codex work in this repository.
-Keep the rules short, stable, and practical.
+このファイルは、このリポジトリで Codex が作業する際の標準ルールです。
+ルールは短く、安定していて、実務的に保ってください。
 
 ### Core Workflow
 
 - `1 purpose = 1 worktree`
-  - Split off a new worktree when the task changes or a separate issue appears.
+  - 作業目的が変わったら、新しい worktree を切る。
 - `1 purpose = 1 branch`
-  - Use one branch per objective. Follow the `codex/<purpose>` naming convention.
+  - 目的ごとに 1 ブランチ。名前は `codex/<purpose>` に従う。
 - `1 purpose = 1 PR`
-  - Keep each PR reviewable as a single intent. Do not mix unrelated fixes, refactors, articles, or UI work.
+  - 1 PR = 1 意図。無関係な修正、リファクタ、記事、UI変更を混ぜない。
 - Do not fold side work into the current change.
-  - If another task is found, move it to a separate worktree, branch, and PR.
+  - 横道の作業を今の変更に混ぜない。
+  - 別タスクが見つかったら、別 worktree / branch / PR に分ける。
 
 ### Article Rules
 
-- Keep article frontmatter complete: `title`, `description`, `publishedAt`, `updatedAt`, `category`, `sources`.
-- Write articles for practical decision-making. Include a clear conclusion, decision criteria, and relevant internal links.
-- Prefer primary sources, public standards, and manufacturer documentation. Always keep source URLs and accessed dates.
-- Only add related tools or articles when they directly support the article's judgement or workflow.
+- 記事 frontmatter は `title`, `description`, `publishedAt`, `updatedAt`, `category`, `sources` を必ず揃える。
+- 記事は実務判断に役立つ内容で書く。結論、判断基準、関連する内部リンクを入れる。
+- 情報源は一次情報、公的規格、メーカー資料を優先する。URL と確認日を残す。
+- 関連記事や関連ツールは、記事の判断や実務フローに直接効くものだけを追加する。
 
 ### Tool Rules
 
-- Keep calculation logic in `lib/` pure functions. Do not bury formulas or judgement rules in page-level UI code.
-- Tool pages should use the standard structure: `buildMetadata()`, `Breadcrumbs`, `SoftwareApplication` JSON-LD, and related-article guidance.
-- Results must preserve units, judgement context, and inputs, not just raw numbers.
-- Changes should avoid breaking existing history, PDF/report output, and related-content flows unless the task explicitly requires it.
+- 計算ロジックは `lib/` に純粋関数として置く。式や判定条件を page-level UI に埋め込まない。
+- ツール構成は原則として、`app/tools/<link>/page.tsx` をページ枠、`app/tools/<link>/<Name>Calculator.tsx` を UI、`lib/<domain>/<feature>.ts` を計算ロジック、`lib/diagrams/<link>.tsx` を正規 SVG とする。
+- 可能な限り `href`、`diagramKey`、図ファイル名は link slug に揃える。例: `bolt-length` -> `lib/diagrams/bolt-length.tsx`
+- 図はツールごとに正規ソースを 1 つにする。本体ページとカードは同じ React SVG コンポーネントを再利用し、印刷・出力用ヘルパーはそこから派生させる。
+- ツールページは `buildMetadata()`、`Breadcrumbs`、`SoftwareApplication` JSON-LD、関連解説導線を標準構成とする。
+- 結果は数値だけでなく、単位、判定文脈、入力条件を保持する。
+- 明示的に必要な場合を除き、履歴、PDF/印刷、関連導線を壊さない。
 
 ### UI Rules
 
-- Reuse existing page structure and shared classes such as `container`, `page-title`, and `page-description` before adding new layout patterns.
-- Keep SEO and site-wide metadata decisions centralized in `lib/seo.ts` and `lib/site.ts`.
-- Reuse existing shared components for breadcrumbs, related links, and article/tool cards wherever possible.
-- Treat UI changes as structure and navigation changes too, not only visual changes.
+- 既存のページ構造と `container`、`page-title`、`page-description` などの共有クラスを優先して使う。
+- SEO とサイト共通 metadata の判断は `lib/seo.ts` と `lib/site.ts` に集約する。
+- パンくず、関連リンク、記事カード、ツールカードは既存の共有コンポーネントを優先して使う。
+- UI変更は見た目だけでなく、構造と導線の変更として扱う。
