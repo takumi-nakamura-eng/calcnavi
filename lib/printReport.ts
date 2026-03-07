@@ -117,6 +117,9 @@ ${buildFormulaSteps(entry)}
 function buildBoltReport(entry: EngHistoryEntry): string {
   const r = entry.results;
   const svg = getBoltLengthSvgString();
+  const toolUrl = 'https://calcnavi.com/tools/bolt-length';
+  const withFixedCols = (rows: string) =>
+    `<table class="report-table report-table--fixed"><colgroup><col style="width:42%"/><col style="width:58%"/></colgroup><tbody>${rows}</tbody></table>`;
   const inputRows = [
     `<tr><th>呼び径</th><td>${entry.inputs.diameter ?? '-'}</td></tr>`,
     ...Object.entries(entry.inputs.dims).map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`),
@@ -128,19 +131,47 @@ function buildBoltReport(entry: EngHistoryEntry): string {
     `<tr><th>先端余長</th><td class="val">${fmt(r.tipAllowance_mm ?? 0, 2)} mm</td></tr>`,
   ].join('');
 
-  return `${baseStyle('ボルト長さ計算書')}
+  return `${baseStyle('ボルト長さ計算書').replace(
+    '</style>',
+    `.compact-grid { display:grid; grid-template-columns: 180px 1fr; gap: 12px; align-items:start; }
+.compact-grid > div { min-width:0; }
+.compact-panel { break-inside: avoid; page-break-inside: avoid; }
+.compact-panel h2 { margin-top: 0; }
+.report-table--fixed { table-layout: fixed; }
+.report-table--fixed th, .report-table--fixed td { word-break: break-word; }
+.report-table--fixed td { text-align: right; }
+.compact-note { font-size: 8pt; color: #4b5563; margin-top: 6px; }
+.compact-steps .formula-step { margin-bottom: 5px; }
+.compact-steps .formula-step-label { font-size: 8pt; }
+.compact-steps .formula-step-expr { font-size: 7.8pt; line-height: 1.35; padding: 4px 6px; }
+.footer a { color: #1d4ed8; text-decoration: underline; }
+</style>`,
+  )}
 <h1>ボルト長さ計算書</h1>
 <div class="meta">計算日時: ${fmtDate(entry.timestamp)} / 用途: ${entry.inputs.purpose ?? '-'}</div>
-<h2>① 図解</h2>
-<div style="max-width:420px">${svg}</div>
-<h2>② 入力</h2>
-<table><tbody>${inputRows}</tbody></table>
-<h2>③ 計算式</h2>
-${buildFormulaSteps(entry)}
-<h2>④ 計算結果</h2>
-<table><tbody>${resultRows}</tbody></table>
+<div class="compact-grid">
+  <div class="compact-panel">
+    <h2>① 図解</h2>
+    <div style="max-width:180px">${svg}</div>
+    <p class="compact-note">必要長さと座金・ナット位置の確認用図です。</p>
+  </div>
+  <div>
+    <div class="compact-panel">
+      <h2>② 入力</h2>
+      ${withFixedCols(inputRows)}
+    </div>
+    <div class="compact-panel" style="margin-top:10px">
+      <h2>③ 計算結果</h2>
+      ${withFixedCols(resultRows)}
+    </div>
+  </div>
+</div>
+<div class="compact-panel compact-steps">
+  <h2>④ 計算式</h2>
+  ${buildFormulaSteps(entry)}
+</div>
 <div class="disclaimer">本計算書は参考値です。実調達時はJIS規格・メーカー寸法を必ず確認してください。</div>
-<div class="footer">calcnavi / tools/bolt-length</div>
+<div class="footer">calcnavi / <a href="${toolUrl}">${toolUrl}</a></div>
 </body></html>`;
 }
 

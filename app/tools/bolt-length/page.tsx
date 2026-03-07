@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import BoltLengthCalculator from './BoltLengthCalculator';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import RelatedArticles from '@/app/components/RelatedArticles';
+import ToolDisclaimer from '@/app/components/ToolDisclaimer';
 import ToolHero from '@/app/components/ToolHero';
 import AdSlot from '@/app/components/ads/AdSlot';
 import { getAllArticles } from '@/lib/content/articles';
@@ -92,12 +93,9 @@ export default async function BoltLengthPage() {
           { label: '種別', value: '締結 / ボルト / 長さ算定' },
         ]}
         diagramKey="bolt-length"
-        note="入力条件 → 計算結果 → 途中式・PDF出力の順で確認できます。"
       />
       <BoltLengthCalculator />
-      <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '2rem', lineHeight: 1.7 }}>
-        ※ 本ツールの結果は参考値です。最終確認は規格・メーカー・専門家にお問い合わせください。
-      </p>
+      <ToolDisclaimer text="本ツールの結果は参考値です。最終確認は規格・メーカー・専門家にお問い合わせください。" />
 
       <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL} className="tool-ad" pageType="tool" />
 

@@ -18,7 +18,8 @@ const BOLT_LENGTH_COLORS = {
   centerline: '#94a3b8',
   head: '#94a3b8',
   shank: '#64748b',
-  plateFill: '#dbeafe',
+  plateFillPrimary: '#dbeafe',
+  plateFillSecondary: '#bfdbfe',
   plateStroke: '#1d4ed8',
   plainWasher: '#cbd5e1',
   springWasher: '#e2e8f0',
@@ -73,8 +74,8 @@ function HorizontalDimension({
 }
 
 export function BoltLengthSvg({
-  width = 420,
-  height = 176,
+  width = 360,
+  height = 240,
   maxWidth,
   ariaLabel = 'ボルト締結の概略図',
   role = 'img',
@@ -86,7 +87,7 @@ export function BoltLengthSvg({
 
   return (
     <svg
-      viewBox="0 0 620 260"
+      viewBox="194 72 244 120"
       preserveAspectRatio="xMidYMid meet"
       width={width}
       height={height}
@@ -96,7 +97,7 @@ export function BoltLengthSvg({
       className={className}
       style={style}
     >
-      <line x1="90" y1="132" x2="530" y2="132" stroke={BOLT_LENGTH_COLORS.centerline} strokeDasharray="4 3" strokeWidth="1" />
+      <line x1="198" y1="132" x2="422" y2="132" stroke={BOLT_LENGTH_COLORS.centerline} strokeDasharray="1 1" strokeWidth="1" />
 
       <polygon
         points="214,98 248,98 259,112 259,152 248,166 214,166 203,152 203,112"
@@ -106,7 +107,8 @@ export function BoltLengthSvg({
       />
       <rect x="248" y="120" width="166" height="24" fill={BOLT_LENGTH_COLORS.shank} stroke={BOLT_LENGTH_COLORS.stroke} strokeWidth="1" />
 
-      <rect x="248" y="92" width="70" height="80" fill={BOLT_LENGTH_COLORS.plateFill} stroke={BOLT_LENGTH_COLORS.plateStroke} strokeWidth="1.3" />
+      <rect x="248" y="92" width="35" height="80" fill={BOLT_LENGTH_COLORS.plateFillPrimary} stroke={BOLT_LENGTH_COLORS.plateStroke} strokeWidth="1.3" />
+      <rect x="283" y="92" width="35" height="80" fill={BOLT_LENGTH_COLORS.plateFillSecondary} stroke={BOLT_LENGTH_COLORS.plateStroke} strokeWidth="1.3" />
 
       <rect x="318" y="96" width="12" height="72" fill={BOLT_LENGTH_COLORS.plainWasher} stroke={BOLT_LENGTH_COLORS.stroke} strokeWidth="1.2" />
       <rect x="330" y="100" width="12" height="64" fill={BOLT_LENGTH_COLORS.springWasher} stroke={BOLT_LENGTH_COLORS.stroke} strokeDasharray="4 2" strokeWidth="1.2" />
@@ -171,19 +173,20 @@ function hdim(x1: number, x2: number, y: number, label: string): string {
 
 export function getBoltLengthSvgMarkup(options: BoltSvgMarkupOptions = {}): string {
   const {
-    width = 420,
-    height = 176,
+    width = 360,
+    height = 240,
     maxWidth,
     includeXmlns = true,
   } = options;
   const maxWidthStyle = maxWidth !== undefined ? `;max-width:${maxWidth}px` : ';max-width:100%';
   const xmlns = includeXmlns ? ' xmlns="http://www.w3.org/2000/svg"' : '';
 
-  return `<svg viewBox="0 0 620 260" preserveAspectRatio="xMidYMid meet"${xmlns} width="${width}" height="${height}" aria-label="ボルト締結の概略図" style="display:block${maxWidthStyle};background:${BOLT_LENGTH_COLORS.frameFill};border:1px solid ${BOLT_LENGTH_COLORS.frameStroke};border-radius:6px;">
-  <line x1="90" y1="132" x2="530" y2="132" stroke="${BOLT_LENGTH_COLORS.centerline}" stroke-dasharray="4 3" stroke-width="1"/>
+  return `<svg viewBox="194 72 244 120" preserveAspectRatio="xMidYMid meet"${xmlns} width="${width}" height="${height}" aria-label="ボルト締結の概略図" style="display:block${maxWidthStyle};background:${BOLT_LENGTH_COLORS.frameFill};border:1px solid ${BOLT_LENGTH_COLORS.frameStroke};border-radius:6px;">
+  <line x1="198" y1="132" x2="422" y2="132" stroke="${BOLT_LENGTH_COLORS.centerline}" stroke-dasharray="1 1" stroke-width="1"/>
   <polygon points="214,98 248,98 259,112 259,152 248,166 214,166 203,152 203,112" fill="${BOLT_LENGTH_COLORS.head}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-width="1.4"/>
   <rect x="248" y="120" width="166" height="24" fill="${BOLT_LENGTH_COLORS.shank}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-width="1"/>
-  <rect x="248" y="92" width="70" height="80" fill="${BOLT_LENGTH_COLORS.plateFill}" stroke="${BOLT_LENGTH_COLORS.plateStroke}" stroke-width="1.3"/>
+  <rect x="248" y="92" width="35" height="80" fill="${BOLT_LENGTH_COLORS.plateFillPrimary}" stroke="${BOLT_LENGTH_COLORS.plateStroke}" stroke-width="1.3"/>
+  <rect x="283" y="92" width="35" height="80" fill="${BOLT_LENGTH_COLORS.plateFillSecondary}" stroke="${BOLT_LENGTH_COLORS.plateStroke}" stroke-width="1.3"/>
   <rect x="318" y="96" width="12" height="72" fill="${BOLT_LENGTH_COLORS.plainWasher}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-width="1.2"/>
   <rect x="330" y="100" width="12" height="64" fill="${BOLT_LENGTH_COLORS.springWasher}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-dasharray="4 2" stroke-width="1.2"/>
   <polygon points="342,104 394,104 402,114 402,150 394,160 342,160" fill="${BOLT_LENGTH_COLORS.nut}" stroke="${BOLT_LENGTH_COLORS.stroke}" stroke-width="1.3"/>
