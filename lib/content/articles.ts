@@ -351,7 +351,7 @@ function validateArticleContent(slug: string, meta: ParsedFrontmatter, body: str
     missing.push('faq(2件以上)');
   }
 
-  if (!/^##\s+図解/m.test(body) || !/(<svg[\s>]|<[A-Z][A-Za-z0-9]*(Svg|Diagram)[\s/>])/m.test(body)) {
+  if (!/^##\s+図解/m.test(body) || !/(<svg[\s>]|<Diagram[\s/>]|<[A-Z][A-Za-z0-9]*Svg[\s/>])/m.test(body)) {
     missing.push('図解(SVG)');
   }
 

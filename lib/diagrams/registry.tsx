@@ -1,6 +1,30 @@
 import type { CSSProperties, ComponentType } from 'react';
+import { AllowableStressBasicsSvg } from './articles/allowable-stress-basics';
+import { BeamDeflectionFormulaSvg } from './articles/beam-deflection-formula';
+import { BoltStrengthClassSelectionSvg } from './articles/bolt-strength-class-selection';
+import { BoltStrengthClassSvg } from './articles/bolt-strength-class';
+import { CantileverBeamBasicsSvg } from './articles/cantilever-beam-basics';
+import { CoarseThreadSvg } from './articles/coarse-thread';
+import { DeflectionLimitLOverNSvg } from './articles/deflection-limit-l-over-n';
+import { GripLengthBasicsSvg } from './articles/grip-length-basics';
+import { HBeamVsChannelSelectionSvg } from './articles/h-beam-vs-channel-selection';
+import { MomentOfInertiaBasicsSvg } from './articles/moment-of-inertia-basics';
+import { NutBasicsSvg } from './articles/nut-basics';
+import { SectionModulusBasicsSvg } from './articles/section-modulus-basics';
+import { SimpleBeamReactionBasicsSvg } from './articles/simple-beam-reaction-basics';
+import { SteelMaterialPropertiesSvg } from './articles/steel-material-properties';
+import { TemplateDiagramSvg } from './articles/template-diagram';
 import { ThreeThreadsSvg } from './articles/three-threads';
+import { TubeSectionWeightComparisonSvg } from './articles/tube-section-weight-comparison';
+import { WasherRoleSvg } from './articles/washer-role';
+import { AnchorSvg } from './tools/anchor';
+import { BeamSvg } from './tools/beam';
 import { BoltLengthSvg, type BoltLengthSvgProps } from './tools/bolt-length';
+import { BoltStrengthSvg } from './tools/bolt-strength';
+import { CantileverSvg } from './tools/cantilever';
+import { SectionPropertiesSvg } from './tools/section-properties';
+import { SteelWeightSvg } from './tools/steel-weight';
+import { UnitSvg } from './tools/unit';
 
 export interface DiagramProps extends BoltLengthSvgProps {
   diagramKey: string;
@@ -58,9 +82,7 @@ function BeamSketch({
       <line x1="120" y1="36" x2="120" y2="62" stroke="#dc2626" strokeWidth="2.5" />
       <polygon points="120,69 114,60 126,60" fill="#dc2626" />
       <line x1="44" y1="112" x2="196" y2="112" stroke="#475569" strokeWidth="1.2" />
-      <text x="120" y="126" textAnchor="middle" fontSize="11" fill="#334155">
-        L
-      </text>
+      <text x="120" y="126" textAnchor="middle" fontSize="11" fill="#334155">L</text>
     </svg>
   );
 }
@@ -95,9 +117,7 @@ function SectionSketch({
       <line x1="58" y1="22" x2="182" y2="22" stroke="#64748b" />
       <line x1="58" y1="22" x2="58" y2="28" stroke="#64748b" />
       <line x1="182" y1="22" x2="182" y2="28" stroke="#64748b" />
-      <text x="120" y="18" textAnchor="middle" fontSize="11" fill="#475569">
-        B
-      </text>
+      <text x="120" y="18" textAnchor="middle" fontSize="11" fill="#475569">B</text>
     </svg>
   );
 }
@@ -135,72 +155,55 @@ function GenericSketch({
 
 const TOOL_DIAGRAMS: Record<string, DiagramComponent> = {
   'bolt-length': BoltLengthSvg,
-  beam: BeamSketch,
-  cantilever: BeamSketch,
-  'section-properties': SectionSketch,
-  'bolt-strength': BoltLengthSvg,
-  'steel-weight': GenericSketch,
-  anchor: GenericSketch,
-  unit: GenericSketch,
+  beam: BeamSvg,
+  cantilever: CantileverSvg,
+  'section-properties': SectionPropertiesSvg,
+  'bolt-strength': BoltStrengthSvg,
+  'steel-weight': SteelWeightSvg,
+  anchor: AnchorSvg,
+  unit: UnitSvg,
 };
 
 const ARTICLE_DIAGRAMS: Record<string, DiagramComponent> = {
+  'allowable-stress-basics': AllowableStressBasicsSvg,
+  'beam-deflection-formula': BeamDeflectionFormulaSvg,
+  'bolt-strength-class-selection': BoltStrengthClassSelectionSvg,
+  'bolt-strength-class': BoltStrengthClassSvg,
+  'cantilever-beam-basics': CantileverBeamBasicsSvg,
+  'coarse-thread': CoarseThreadSvg,
+  'deflection-limit-l-over-n': DeflectionLimitLOverNSvg,
+  'grip-length-basics': GripLengthBasicsSvg,
+  'h-beam-vs-channel-selection': HBeamVsChannelSelectionSvg,
+  'moment-of-inertia-basics': MomentOfInertiaBasicsSvg,
+  'nut-basics': NutBasicsSvg,
+  'section-modulus-basics': SectionModulusBasicsSvg,
+  'simple-beam-reaction-basics': SimpleBeamReactionBasicsSvg,
+  'steel-material-properties': SteelMaterialPropertiesSvg,
+  'template-diagram': TemplateDiagramSvg,
   'three-threads': ThreeThreadsSvg,
+  'tube-section-weight-comparison': TubeSectionWeightComparisonSvg,
+  'washer-role': WasherRoleSvg,
 };
 
 function resolveToolFallbackDiagram(diagramKey: string): DiagramComponent {
   const key = diagramKey.toLowerCase();
-  if (key.includes('bolt')) {
-    return BoltLengthSvg;
-  }
-  if (
-    key.includes('beam') ||
-    key.includes('cantilever') ||
-    key.includes('deflection')
-  ) {
-    return BeamSketch;
-  }
-  if (
-    key.includes('section') ||
-    key.includes('steel') ||
-    key.includes('tube')
-  ) {
-    return SectionSketch;
-  }
+  if (key.includes('bolt')) return BoltLengthSvg;
+  if (key.includes('beam') || key.includes('cantilever') || key.includes('deflection')) return BeamSketch;
+  if (key.includes('section') || key.includes('steel') || key.includes('tube')) return SectionSketch;
   return GenericSketch;
 }
 
 function resolveArticleFallbackDiagram(diagramKey: string): DiagramComponent {
   const key = diagramKey.toLowerCase();
-  if (
-    key.includes('beam') ||
-    key.includes('deflection') ||
-    key.includes('stress') ||
-    key.includes('channel') ||
-    key.includes('reaction') ||
-    key.includes('cantilever')
-  ) {
-    return BeamSketch;
-  }
-  if (
-    key.includes('section') ||
-    key.includes('modulus') ||
-    key.includes('inertia') ||
-    key.includes('tube')
-  ) {
-    return SectionSketch;
-  }
+  if (key.includes('beam') || key.includes('deflection') || key.includes('cantilever')) return BeamSketch;
+  if (key.includes('section') || key.includes('modulus') || key.includes('inertia') || key.includes('tube')) return SectionSketch;
   return GenericSketch;
 }
 
-export function getDiagramComponent(
-  kind: 'article' | 'tool',
-  diagramKey: string,
-): DiagramComponent {
+export function getDiagramComponent(kind: 'article' | 'tool', diagramKey: string): DiagramComponent {
   if (kind === 'tool') {
     return TOOL_DIAGRAMS[diagramKey] ?? resolveToolFallbackDiagram(diagramKey);
   }
-
   return ARTICLE_DIAGRAMS[diagramKey] ?? resolveArticleFallbackDiagram(diagramKey);
 }
 
