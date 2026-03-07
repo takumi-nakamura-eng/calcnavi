@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { addEngHistoryEntry, type EngHistoryEntry, type FormulaStep } from '@/lib/engHistory';
 import { printEngReport } from '@/lib/printReport';
 import { trackToolCalculate } from '@/lib/analytics/events';
+import { calcBoltLength } from '@/lib/bolts/length';
 import { BOLT_CALC_SPECS, type Diameter } from '@/lib/bolts/specs';
 import BoltLengthDimensionDiagram from './BoltLengthDimensionDiagram';
 
@@ -24,11 +25,6 @@ function parseIntegerInRange(
     return { ok: false, error: `${fieldLabel}は${min}〜${max}の範囲で入力してください。` };
   }
   return { ok: true, value: num };
-}
-
-function ceilToBuyLength(mm: number): number {
-  const step = mm <= 100 ? 5 : mm <= 200 ? 10 : 25;
-  return Math.ceil(mm / step) * step;
 }
 
 interface Result {
@@ -72,51 +68,17 @@ export default function BoltLengthCalculator() {
     setSwError(parsedSw.ok ? '' : parsedSw.error);
     if (!parsedN.ok || !parsedPw.ok || !parsedSw.ok) return;
 
-    const spec = BOLT_CALC_SPECS[diam];
     const nv = parsedN.value;
     const pwv = parsedPw.value;
     const swv = parsedSw.value;
-
-    const nutTerm = nv * spec.Hnut;
-    const pwTerm = pwv * spec.Hpw;
-    const swTerm = swv * spec.Hsw;
-    const tip = 3 * spec.p;
-
-    const lRequired = tVal + nutTerm + pwTerm + swTerm + tip;
-    const lBuy = ceilToBuyLength(lRequired);
-
-    const steps: FormulaStep[] = [
-      {
-        label: '先端余長',
-        expr: `先端余長 = 3p = 3 × ${spec.p.toFixed(2)} = ${tip.toFixed(2)} mm`,
-      },
-      {
-        label: '必要長さ',
-        expr:
-          `L_required = t + N×Hnut + PW×Hpw + SW×Hsw + 3p\n` +
-          `= ${tVal.toFixed(1)} + ${nv}×${spec.Hnut.toFixed(1)} + ${pwv}×${spec.Hpw.toFixed(1)} + ${swv}×${spec.Hsw.toFixed(1)} + ${tip.toFixed(2)}\n` +
-          `= ${lRequired.toFixed(2)} mm`,
-      },
-      {
-        label: '推奨購入長さ',
-        expr: `規格刻みに切り上げ: ceil(${lRequired.toFixed(2)}) -> ${lBuy} mm`,
-      },
-    ];
-
-    const nextResult: Result = {
-      lRequired,
-      lBuy,
-      tipAllowance: tip,
+    const spec = BOLT_CALC_SPECS[diam];
+    const nextResult: Result = calcBoltLength({
       diam,
-      steps,
-      breakdown: [
-        { label: '締結厚さ t', value: tVal },
-        { label: `六角ナット N × ${nv}`, value: nutTerm },
-        { label: `平座金 PW × ${pwv}`, value: pwTerm },
-        { label: `ばね座金 SW × ${swv}`, value: swTerm },
-        { label: '先端余長 (3p)', value: tip },
-      ],
-    };
+      thicknessMm: tVal,
+      nutCount: nv,
+      plainWasherCount: pwv,
+      springWasherCount: swv,
+    });
     setResult(nextResult);
 
     const entry = addEngHistoryEntry({
@@ -145,11 +107,11 @@ export default function BoltLengthCalculator() {
         diameter: diam,
       },
       results: {
-        lRequired_mm: lRequired,
-        lBuy_mm: lBuy,
-        tipAllowance_mm: tip,
+        lRequired_mm: nextResult.lRequired,
+        lBuy_mm: nextResult.lBuy,
+        tipAllowance_mm: nextResult.tipAllowance,
       },
-      formulaSteps: steps,
+      formulaSteps: nextResult.steps,
     });
     setLastEntry(entry);
 
