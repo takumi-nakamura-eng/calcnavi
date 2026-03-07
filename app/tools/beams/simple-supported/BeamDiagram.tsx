@@ -1,5 +1,5 @@
 import type { LoadCase } from '@/lib/beams/simpleBeam';
-import { BeamSvg } from '@/lib/diagrams/tools/beam';
+import { SimpleSupportedSvg } from '@/lib/diagrams/tools/simple-supported';
 
 interface Props {
   loadCase: LoadCase;
@@ -8,5 +8,5 @@ interface Props {
 }
 
 export default function BeamDiagram({ loadCase, spanLabel, loadLabel }: Props) {
-  return <BeamSvg loadCase={loadCase} spanLabel={spanLabel} loadLabel={loadLabel} />;
+  return <SimpleSupportedSvg loadCase={loadCase} spanLabel={spanLabel} loadLabel={loadLabel} />;
 }

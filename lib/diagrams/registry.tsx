@@ -18,7 +18,7 @@ import { ThreeThreadsSvg } from './articles/three-threads';
 import { TubeSectionWeightComparisonSvg } from './articles/tube-section-weight-comparison';
 import { WasherRoleSvg } from './articles/washer-role';
 import { AnchorSvg } from './tools/anchor';
-import { BeamSvg } from './tools/beam';
+import { SimpleSupportedSvg } from './tools/simple-supported';
 import { BoltLengthSvg, type BoltLengthSvgProps } from './tools/bolt-length';
 import { BoltStrengthSvg } from './tools/bolt-strength';
 import { CantileverSvg } from './tools/cantilever';
@@ -155,7 +155,7 @@ function GenericSketch({
 
 const TOOL_DIAGRAMS: Record<string, DiagramComponent> = {
   'bolt-length': BoltLengthSvg,
-  beam: BeamSvg,
+  'simple-supported': SimpleSupportedSvg,
   cantilever: CantileverSvg,
   'section-properties': SectionPropertiesSvg,
   'bolt-strength': BoltStrengthSvg,

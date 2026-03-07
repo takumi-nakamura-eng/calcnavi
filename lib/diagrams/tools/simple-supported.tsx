@@ -1,7 +1,7 @@
 import type { BoltLengthSvgProps } from './bolt-length';
 import type { LoadCase } from '@/lib/beams/simpleBeam';
 
-interface BeamSvgProps extends BoltLengthSvgProps {
+interface SimpleSupportedSvgProps extends BoltLengthSvgProps {
   loadCase?: LoadCase;
   spanLabel?: string;
   loadLabel?: string;
@@ -15,7 +15,7 @@ const BEAM_X1 = 40;
 const BEAM_X2 = 320;
 const SUP_H = 18;
 
-export function BeamSvg({
+export function SimpleSupportedSvg({
   width = '100%',
   height,
   maxWidth = 420,
@@ -27,7 +27,7 @@ export function BeamSvg({
   loadCase = 'center',
   spanLabel,
   loadLabel,
-}: BeamSvgProps) {
+}: SimpleSupportedSvgProps) {
   const beamTop = BEAM_Y - BEAM_H / 2;
   const beamBot = BEAM_Y + BEAM_H / 2;
   const pinLeft = trianglePoints(BEAM_X1, beamBot, SUP_H);
