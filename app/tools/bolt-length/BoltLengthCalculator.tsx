@@ -6,7 +6,6 @@ import { printEngReport } from '@/lib/printReport';
 import { trackToolCalculate } from '@/lib/analytics/events';
 import { calcBoltLength } from '@/lib/bolts/length';
 import { BOLT_CALC_SPECS, type Diameter } from '@/lib/bolts/specs';
-import BoltLengthDimensionDiagram from './BoltLengthDimensionDiagram';
 
 function parseIntegerInRange(
   value: string,
@@ -119,175 +118,182 @@ export default function BoltLengthCalculator() {
   }
 
   return (
-    <>
-      <div className="beam-diagram-wrapper">
-        <BoltLengthDimensionDiagram />
+    <section className="tool-workbench bolt-length-workbench" aria-label="ボルト長さ計算エリア">
+      <div className="tool-workbench__section">
+        <div className="tool-workbench__header">
+          <h2 className="tool-workbench__title">
+            <span className="tool-workbench__title-icon" aria-hidden="true">✍️</span>
+            入力条件
+          </h2>
+        </div>
+
+        <form className="loan-form bolt-length-form" onSubmit={handleSubmit} noValidate>
+          <div className="form-group bolt-length-form__field bolt-length-form__field--diameter">
+            <label htmlFor="diam">呼び径</label>
+            <select id="diam" value={diam} onChange={(e) => setDiam(e.target.value as Diameter)}>
+              {(Object.keys(BOLT_CALC_SPECS) as Diameter[]).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group bolt-length-form__field bolt-length-form__field--thickness">
+            <label htmlFor="thickness">締結厚さ t (mm)</label>
+            <input
+              id="thickness"
+              type="number"
+              min="0.1"
+              step="0.1"
+              placeholder="例: 20"
+              value={t}
+              onChange={(e) => {
+                setT(e.target.value);
+                setTError('');
+              }}
+              className={tError ? 'input-error' : ''}
+            />
+            {tError && <span className="error-message">{tError}</span>}
+          </div>
+
+          <div className="form-group bolt-length-form__field">
+            <label htmlFor="nNut">六角ナット N (枚)</label>
+            <input
+              id="nNut"
+              type="number"
+              min="0"
+              max="10"
+              step="1"
+              value={n}
+              onChange={(e) => {
+                setN(e.target.value);
+                setNError('');
+              }}
+              className={nError ? 'input-error' : ''}
+            />
+            {nError && <span className="error-message">{nError}</span>}
+          </div>
+
+          <div className="form-group bolt-length-form__field">
+            <label htmlFor="nPw">平座金 PW (枚)</label>
+            <input
+              id="nPw"
+              type="number"
+              min="0"
+              max="10"
+              step="1"
+              value={pw}
+              onChange={(e) => {
+                setPw(e.target.value);
+                setPwError('');
+              }}
+              className={pwError ? 'input-error' : ''}
+            />
+            {pwError && <span className="error-message">{pwError}</span>}
+          </div>
+
+          <div className="form-group bolt-length-form__field">
+            <label htmlFor="nSw">ばね座金 SW (枚)</label>
+            <input
+              id="nSw"
+              type="number"
+              min="0"
+              max="10"
+              step="1"
+              value={sw}
+              onChange={(e) => {
+                setSw(e.target.value);
+                setSwError('');
+              }}
+              className={swError ? 'input-error' : ''}
+            />
+            {swError && <span className="error-message">{swError}</span>}
+          </div>
+
+          <div className="form-group bolt-length-form__purpose">
+            <label htmlFor="bolt-purpose">用途メモ（任意）</label>
+            <input
+              id="bolt-purpose"
+              type="text"
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
+              placeholder="例: モーターベース固定"
+              maxLength={100}
+            />
+          </div>
+
+          <div className="form-submit-row">
+            <button type="submit" className="btn-primary">計算する</button>
+            {lastEntry && (
+              <button type="button" className="pdf-btn" onClick={() => printEngReport(lastEntry)}>
+                PDF出力
+              </button>
+            )}
+          </div>
+        </form>
       </div>
 
-      <form className="loan-form" onSubmit={handleSubmit} noValidate>
-        <div className="form-group">
-          <label htmlFor="diam">呼び径</label>
-          <select id="diam" value={diam} onChange={(e) => setDiam(e.target.value as Diameter)}>
-            {(Object.keys(BOLT_CALC_SPECS) as Diameter[]).map((d) => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="thickness">締結厚さ t (mm)</label>
-          <input
-            id="thickness"
-            type="number"
-            min="0.1"
-            step="0.1"
-            placeholder="例: 20"
-            value={t}
-            onChange={(e) => {
-              setT(e.target.value);
-              setTError('');
-            }}
-            className={tError ? 'input-error' : ''}
-          />
-          {tError && <span className="error-message">{tError}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="nNut">六角ナット N (枚)</label>
-          <input
-            id="nNut"
-            type="number"
-            min="0"
-            max="10"
-            step="1"
-            value={n}
-            onChange={(e) => {
-              setN(e.target.value);
-              setNError('');
-            }}
-            className={nError ? 'input-error' : ''}
-          />
-          {nError && <span className="error-message">{nError}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="nPw">平座金 PW (枚)</label>
-          <input
-            id="nPw"
-            type="number"
-            min="0"
-            max="10"
-            step="1"
-            value={pw}
-            onChange={(e) => {
-              setPw(e.target.value);
-              setPwError('');
-            }}
-            className={pwError ? 'input-error' : ''}
-          />
-          {pwError && <span className="error-message">{pwError}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="nSw">ばね座金 SW (枚)</label>
-          <input
-            id="nSw"
-            type="number"
-            min="0"
-            max="10"
-            step="1"
-            value={sw}
-            onChange={(e) => {
-              setSw(e.target.value);
-              setSwError('');
-            }}
-            className={swError ? 'input-error' : ''}
-          />
-          {swError && <span className="error-message">{swError}</span>}
-        </div>
-
-        <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-          <label htmlFor="bolt-purpose">用途メモ（任意）</label>
-          <input
-            id="bolt-purpose"
-            type="text"
-            value={purpose}
-            onChange={(e) => setPurpose(e.target.value)}
-            placeholder="例: モーターベース固定"
-            maxLength={100}
-          />
-        </div>
-
-        <div className="form-submit-row">
-          <button type="submit" className="btn-primary">計算する</button>
-          {lastEntry && (
-            <button type="button" className="pdf-btn" onClick={() => printEngReport(lastEntry)}>
-              PDF出力
-            </button>
-          )}
-        </div>
-      </form>
-
-      {result && (
-        <div className="results" style={{ marginTop: '2rem' }}>
-          <h2>計算結果</h2>
-          <p className="result-meta">
-            呼び径 {result.diam}（ピッチ {BOLT_CALC_SPECS[result.diam].p} mm）
-          </p>
-          <div className="result-cards">
-            <div className="result-card result-card--primary">
-              <p className="result-label">推奨購入長さ</p>
-              <p className="result-value">{result.lBuy} mm</p>
-            </div>
-            <div className="result-card">
-              <p className="result-label">計算値</p>
-              <p className="result-value">{result.lRequired.toFixed(2)} mm</p>
-            </div>
-          </div>
-
-          <div className="table-section">
-            <h3>内訳</h3>
-            <div className="table-container" style={{ maxHeight: 'none' }}>
-              <table className="amortization-table">
-                <thead>
-                  <tr>
-                    <th style={{ textAlign: 'left' }}>項目</th>
-                    <th>寸法 (mm)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {result.breakdown.map((row) => (
-                    <tr key={row.label}>
-                      <td style={{ textAlign: 'left', color: 'var(--text)', fontWeight: 400 }}>
-                        {row.label}
-                      </td>
-                      <td>{row.value.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td style={{ textAlign: 'left', fontWeight: 700, color: 'var(--primary)' }}>
-                      合計 (L_required)
-                    </td>
-                    <td style={{ color: 'var(--primary)', fontWeight: 700 }}>
-                      {result.lRequired.toFixed(2)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="formula-steps-section" style={{ marginTop: '1.5rem' }}>
-            <h3 className="formula-steps-title">計算式・途中経過</h3>
-            {result.steps.map((step) => (
-              <div key={step.label} className="formula-step">
-                <div className="formula-step-label">{step.label}</div>
-                <pre className="formula-step-expr">{step.expr}</pre>
+      {result ? (
+        <div className="tool-workbench__section tool-workbench__section--results">
+          <div className="results bolt-length-results">
+            <h2>計算結果</h2>
+            <p className="result-meta">
+              呼び径 {result.diam}（ピッチ {BOLT_CALC_SPECS[result.diam].p} mm）
+            </p>
+            <div className="result-cards bolt-length-result-cards">
+              <div className="result-card result-card--primary">
+                <p className="result-label">推奨購入長さ</p>
+                <p className="result-value">{result.lBuy} mm</p>
               </div>
-            ))}
+              <div className="result-card">
+                <p className="result-label">計算値</p>
+                <p className="result-value">{result.lRequired.toFixed(2)} mm</p>
+              </div>
+            </div>
+
+            <div className="table-section bolt-length-results__panel">
+              <h3>内訳</h3>
+              <div className="table-container bolt-length-results__table">
+                <table className="amortization-table">
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'left' }}>項目</th>
+                      <th>寸法 (mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.breakdown.map((row) => (
+                      <tr key={row.label}>
+                        <td style={{ textAlign: 'left', color: 'var(--text)', fontWeight: 400 }}>
+                          {row.label}
+                        </td>
+                        <td>{row.value.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td style={{ textAlign: 'left', fontWeight: 700, color: 'var(--primary)' }}>
+                        合計 (L_required)
+                      </td>
+                      <td style={{ color: 'var(--primary)', fontWeight: 700 }}>
+                        {result.lRequired.toFixed(2)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="formula-steps-section bolt-length-results__panel">
+              <h3 className="formula-steps-title">計算式・途中経過</h3>
+              {result.steps.map((step) => (
+                <div key={step.label} className="formula-step">
+                  <div className="formula-step-label">{step.label}</div>
+                  <pre className="formula-step-expr">{step.expr}</pre>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      )}
-    </>
+      ) : null}
+    </section>
   );
 }
