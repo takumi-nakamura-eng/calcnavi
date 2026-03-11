@@ -18,7 +18,7 @@ export default function AboutPage() {
           <tbody>
             <tr>
               <th>運営者名</th>
-              <td>Takumi Nakamura</td>
+              <td>E. Pascal（ペンネーム）</td>
             </tr>
             <tr>
               <th>運営体制</th>
@@ -30,11 +30,11 @@ export default function AboutPage() {
             </tr>
             <tr>
               <th>専門領域</th>
-              <td>機械設計、設備架台・配管サポートの構造検討、鋼材重量拾い、締結部の一次設計</td>
+              <td>上下水道設備のプラント設計、設備検討、設計実務で使う計算・一次判断の整理</td>
             </tr>
             <tr>
               <th>実務経験</th>
-              <td>製造業・設備分野での設計、施工管理、現場確認を含む実務ベースで運営</td>
+              <td>上下水道設備分野の設計実務をベースに運営</td>
             </tr>
             <tr>
               <th>専門資格</th>
@@ -42,26 +42,16 @@ export default function AboutPage() {
             </tr>
             <tr>
               <th>主要実績</th>
-              <td>設備架台、ボルト締結条件、梁たわみ、断面性能、鋼材拾いの社内一次検討フローを Web ツール化して運用</td>
+              <td>設備設計で繰り返し使う計算・確認フローを Web ツールとして整理し、再利用しやすい形に運用</td>
             </tr>
           </tbody>
         </table>
 
-        <h2>外部プロフィール</h2>
-        <ul>
-          <li>
-            <a
-              href="https://github.com/takumi-nakamura-eng"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-            >
-              GitHub: takumi-nakamura-eng
-            </a>
-          </li>
-          <li>
-            LinkedIn など追加プロフィールは公開準備が整い次第、このページから案内します。
-          </li>
-        </ul>
+        <p>
+          E. Pascal は、設計・計算・実務に役立つ工学知を整理して届けることを意識したペンネームです。
+          Work Shift Studio として、機械設計・施工実務に役立つ計算ツールと技術解説の提供を通じて、
+          実務で使いやすく、根拠を確認しやすい情報発信を目指しています。
+        </p>
 
         <h2>サイト開設の目的</h2>
         <p>
@@ -83,7 +73,7 @@ export default function AboutPage() {
         <h2>お問い合わせ</h2>
         <p>
           ご質問・ご意見・不具合報告は<a href="/contact">お問い合わせページ</a>よりご連絡ください。運営連絡用メールは
-          {' '}<a href="mailto:takumi.nakamura.eng@gmail.com">takumi.nakamura.eng@gmail.com</a> です。
+          {' '}<a href="mailto:contact.calcnavi@gmail.com">contact.calcnavi@gmail.com</a> です。
         </p>
       </div>
     </main>
