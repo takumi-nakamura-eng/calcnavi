@@ -13,7 +13,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata: Metadata = buildMetadata({
   title: '断面性能計算ツール',
   description:
-    'H形鋼・角形鋼管・丸形鋼管・フラットバー・アングル・チャンネルの断面二次モーメント（I）・断面係数（Z）・断面積を計算できるツールです。強軸・弱軸に対応し、梁や柱の一次確認に使えます。',
+    'H形鋼・Tバー・角形鋼管・丸形鋼管・丸棒・フラットバー・アングル・チャンネルの断面二次モーメント・断面係数・断面二次半径・単位重量を計算できます。',
   path: '/tools/section-properties',
 });
 
@@ -31,7 +31,7 @@ export default async function SectionPropertiesPage() {
     operatingSystem: 'Web',
     applicationCategory: 'EngineeringApplication',
     description:
-      '各種鋼材形状の断面二次モーメント、断面係数、断面積を計算する無料ツール。強軸・弱軸に対応し、梁や柱の一次確認に使えます。',
+      '各種鋼材形状の断面二次モーメント、断面係数、断面二次半径、単位重量を計算する無料ツール。強軸・弱軸に対応します。',
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -57,9 +57,9 @@ export default async function SectionPropertiesPage() {
 
       <ToolHero
         title="断面性能計算"
-        description="H形鋼・角形鋼管・丸形鋼管・フラットバー・アングル・チャンネルの断面二次モーメント（I）・断面係数（Z）・断面積を計算できるツールです。強軸・弱軸に対応し、梁や柱の一次確認に使えます。"
+        description="H形鋼・Tバー・角形鋼管・丸形鋼管・丸棒・フラットバー・アングル・チャンネルの断面二次モーメント（I）・断面係数（Z）・断面二次半径・単位重量を計算できるツールです。"
         labels={[
-          { label: '対応形状', value: '6断面' },
+          { label: '対応形状', value: '8断面' },
           { label: '用途', value: '一次確認' },
           { label: '種別', value: '梁 / 断面 / 断面性能' },
         ]}

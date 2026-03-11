@@ -134,6 +134,7 @@ export default function SteelWeightCalculator() {
 
   // ── Totals ──
   const totalW = useMemo(() => items.reduce((s, i) => s + i.W_kg, 0), [items]);
+  const totalLoad = useMemo(() => items.reduce((s, i) => s + i.W_kN, 0), [items]);
   const totalCount = items.length;
 
   function buildSnapshotData(snapshotItems: SteelWeightItem[]): Omit<EngHistoryEntry, 'id' | 'timestamp'> | null {
@@ -156,6 +157,7 @@ export default function SteelWeightCalculator() {
       },
       results: {
         totalWeight_kg: snapshotItems.reduce((sum, item) => sum + item.W_kg, 0),
+        totalLoad_kN: snapshotItems.reduce((sum, item) => sum + item.W_kN, 0),
         itemCount: snapshotItems.length,
       },
       formulaSteps: [],
@@ -262,7 +264,7 @@ export default function SteelWeightCalculator() {
   }
 
   function handleCopyTSV() {
-    const header = ['No', '形状', '寸法', 'L [m]', 'n', '単位重量 [kg/m]', '重量 [kg]', '備考'].join('\t');
+    const header = ['No', '形状', '寸法', 'L [m]', 'n', '単位重量 [kg/m]', '重量 [kg]', '荷重 [kN]', '備考'].join('\t');
     const rows = items.map((item, i) => [
       i + 1,
       shapeLabel(item.shape),
@@ -271,9 +273,10 @@ export default function SteelWeightCalculator() {
       item.n,
       fmtNum(item.w_kgm, 3),
       fmtNum(item.W_kg, 2),
+      fmtNum(item.W_kN, 3),
       item.note,
     ].join('\t'));
-    const footer = `\t\t\t\t\t合計\t${fmtNum(totalW, 2)}`;
+    const footer = `\t\t\t\t\t合計\t${fmtNum(totalW, 2)}\t${fmtNum(totalLoad, 3)}`;
     const tsv = [header, ...rows, footer].join('\n');
     navigator.clipboard.writeText(tsv).catch(() => {
       // fallback: do nothing
@@ -450,6 +453,7 @@ export default function SteelWeightCalculator() {
                   <th>n</th>
                   <th>単位重量 [kg/m]</th>
                   <th>重量 [kg]</th>
+                  <th>荷重 [kN]</th>
                   <th>備考</th>
                   <th>操作</th>
                 </tr>
@@ -488,6 +492,7 @@ export default function SteelWeightCalculator() {
                       <td>{item.n}</td>
                       <td>{fmtNum(item.w_kgm, 3)}</td>
                       <td className="sw-weight-cell">{fmtNum(item.W_kg, 2)}</td>
+                      <td className="sw-weight-cell">{fmtNum(item.W_kN, 3)}</td>
                       <td className="sw-note-cell">{item.note}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '0.25rem' }}>
@@ -519,6 +524,9 @@ export default function SteelWeightCalculator() {
                   <td style={{ fontWeight: 700, fontSize: '1.05rem' }}>
                     {fmtNum(totalW, 2)} kg
                   </td>
+                  <td style={{ fontWeight: 700, fontSize: '1.05rem' }}>
+                    {fmtNum(totalLoad, 3)} kN
+                  </td>
                   <td colSpan={2} />
                 </tr>
               </tfoot>
@@ -532,6 +540,12 @@ export default function SteelWeightCalculator() {
         <div className="sw-total-summary">
           <span className="sw-total-label">総重量</span>
           <span className="sw-total-value">{fmtNum(totalW, 2)} <span className="sw-total-unit">kg</span></span>
+        </div>
+      )}
+      {items.length > 0 && (
+        <div className="sw-total-summary" style={{ marginTop: '0.75rem' }}>
+          <span className="sw-total-label">総荷重</span>
+          <span className="sw-total-value">{fmtNum(totalLoad, 3)} <span className="sw-total-unit">kN</span></span>
         </div>
       )}
         </div>
@@ -588,7 +602,7 @@ function EditRow({
   return (
     <tr className="sw-edit-row">
       <td>{idx + 1}</td>
-      <td colSpan={7}>
+      <td colSpan={8}>
         <div className="sw-edit-fields">
           <div className="form-group" style={{ flex: '0 0 130px' }}>
             <label>形状</label>
