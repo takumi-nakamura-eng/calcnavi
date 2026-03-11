@@ -12,10 +12,14 @@ export const metadata: Metadata = buildMetadata({
 
 export const revalidate = 3600;
 
+function normalizeQueryParam(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? value[0] ?? '' : value ?? '';
+}
+
 export default async function ToolsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string }>;
+  searchParams?: Promise<{ q?: string | string[] }>;
 }) {
   const params = (await searchParams) ?? {};
   const tools = getAvailableTools();
@@ -27,7 +31,7 @@ export default async function ToolsPage({
         <h1 className="tools-page-title">計算ツール</h1>
         <p className="tools-page-desc">設計・施工・暮らしに役立つ計算ツールを提供しています。</p>
       </div>
-      <ToolsClient initialTools={tools} initialQuery={params.q ?? ''} />
+      <ToolsClient initialTools={tools} initialQuery={normalizeQueryParam(params.q)} />
     </div>
   );
 }
