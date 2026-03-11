@@ -1,4 +1,3 @@
-export { default } from '@/app/components/AdSenseBlock';
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -10,16 +9,20 @@ declare global {
   }
 }
 
-export default function AdSlot({
+type AdFormat = 'auto' | 'rectangle' | 'horizontal' | 'vertical';
+
+export default function AdSenseBlock({
   slot,
   format = 'auto',
   className,
   pageType = 'unknown',
+  label = 'スポンサーリンク',
 }: {
   slot?: string;
-  format?: 'auto' | 'rectangle' | 'horizontal' | 'vertical';
+  format?: AdFormat;
   className?: string;
   pageType?: string;
+  label?: string;
 }) {
   const enabled = process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true';
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
@@ -58,11 +61,13 @@ export default function AdSlot({
   if (!enabled || !client || !slot) return null;
 
   return (
-    <div
+    <aside
       ref={slotRef}
       className={`ad-slot ${className ?? ''}`.trim()}
+      aria-label={label}
       onClickCapture={() => trackAdClick({ slot, pageType })}
     >
+      <p className="ad-slot__label">{label}</p>
       <ins
         className="adsbygoogle"
         style={{ display: 'block', minHeight: 280 }}
@@ -71,6 +76,6 @@ export default function AdSlot({
         data-ad-format={format}
         data-full-width-responsive="true"
       />
-    </div>
+    </aside>
   );
 }

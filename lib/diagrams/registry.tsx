@@ -1,4 +1,4 @@
-import type { CSSProperties, ComponentType } from 'react';
+import { createElement, type CSSProperties, type ComponentType } from 'react';
 import { AllowableStressBasicsSvg } from './articles/allowable-stress-basics';
 import { AllowableShearStressBasicsSvg } from './articles/allowable-shear-stress-basics';
 import { AnchorBoltSelectionBasicsSvg } from './articles/anchor-bolt-selection-basics';
@@ -240,6 +240,6 @@ export function getDiagramComponent(kind: 'article' | 'tool', diagramKey: string
 }
 
 export function DiagramRenderer({ diagramKey, kind = 'article', ...props }: DiagramProps) {
-  const DiagramComponent = getDiagramComponent(kind, diagramKey);
-  return <DiagramComponent {...props} />;
+  const renderDiagram = getDiagramComponent(kind, diagramKey);
+  return createElement(renderDiagram, props);
 }

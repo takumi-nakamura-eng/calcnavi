@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import CantileverCalculator from './CantileverCalculator';
-import AdSlot from '@/app/components/ads/AdSlot';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import RelatedArticles from '@/app/components/RelatedArticles';
 import ToolDisclaimer from '@/app/components/ToolDisclaimer';
 import ToolHero from '@/app/components/ToolHero';
+import { formatContentDate } from '@/lib/contentDates';
 import { getAllArticles } from '@/lib/content/articles';
 import { getToolById } from '@/lib/data/tools';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
@@ -64,12 +64,13 @@ export default async function CantileverPage() {
           { label: '用途', value: '一次確認' },
           { label: '種別', value: '梁 / 片持ち / たわみ' },
         ]}
+        publishedLabel={formatContentDate(tool?.publishedAt ?? '2026-03-04')}
+        updatedLabel={formatContentDate(tool?.updatedAt ?? '2026-03-11')}
         diagramKey="cantilever"
         diagramMaxWidth={220}
       />
       <CantileverCalculator />
       <ToolDisclaimer />
-      <AdSlot slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL} className="tool-ad" pageType="tool" />
       <RelatedArticles
         source="tool:cantilever"
         items={relatedArticles.map((article) => ({
