@@ -1,3 +1,5 @@
+import { kgToKN } from './beams/units';
+
 export type SteelShape =
   | 'plate'
   | 'roundBar'
@@ -176,6 +178,10 @@ export interface SteelWeightItem {
   W_kN: number;
 }
 
+function weightKgToKN(weightKg: number): number {
+  return kgToKN(weightKg);
+}
+
 export function buildItem(
   shape: SteelShape,
   dims: Record<string, number>,
@@ -199,7 +205,7 @@ export function buildItem(
     area_m2: area,
     w_kgm: w,
     W_kg: W,
-    W_kN: W / 1000,
+    W_kN: weightKgToKN(W),
   };
 }
 
@@ -208,7 +214,7 @@ export function recalcItem(item: SteelWeightItem): SteelWeightItem {
   if (area === null) return item;
   const w = item.rho * area;
   const W = w * item.Lm * item.n;
-  return { ...item, area_m2: area, w_kgm: w, W_kg: W, W_kN: W / 1000 };
+  return { ...item, area_m2: area, w_kgm: w, W_kg: W, W_kN: weightKgToKN(W) };
 }
 
 export function dimSummary(shape: SteelShape, dims: Record<string, number>): string {
@@ -226,7 +232,7 @@ export function loadItems(): SteelWeightItem[] {
     if (!raw) return [];
     return (JSON.parse(raw) as SteelWeightItem[]).map((item) => ({
       ...item,
-      W_kN: item.W_kN ?? item.W_kg / 1000,
+      W_kN: weightKgToKN(item.W_kg),
     }));
   } catch {
     return [];

@@ -121,7 +121,7 @@ export default function BeamCaseCalculator({
         Z_mm3_input: normalizedInput.Z_mm3,
       },
       results: {
-        reactionSummary: nextResult.reactions.map((reaction) => `${reaction.label}: ${formatNumber(reaction.value_kN, 3)} kN`),
+        reactionSummary: nextResult.reactions.map((reaction) => `${reaction.label}: ${formatNumber(reaction.value, 3)} ${reaction.unit}`),
         Mmax_kNm: nextResult.maxMoment_kNm,
         sigmaMax_MPa: nextResult.maxBendingStress_MPa,
         stressOK: nextResult.stressOk,
@@ -346,7 +346,7 @@ export default function BeamCaseCalculator({
                   {result.reactions.map((reaction) => (
                     <tr key={reaction.label}>
                       <td>{reaction.label}</td>
-                      <td>{formatNumber(reaction.value_kN, 3)} {reaction.label.includes('モーメント') ? 'kN·m' : 'kN'}</td>
+                      <td>{formatNumber(reaction.value, 3)} {reaction.unit}</td>
                       <td>-</td>
                     </tr>
                   ))}

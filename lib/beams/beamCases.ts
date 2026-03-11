@@ -22,7 +22,8 @@ export interface BeamCaseValidationResult {
 
 export interface BeamReaction {
   label: string;
-  value_kN: number;
+  value: number;
+  unit: 'kN' | 'kN·m';
 }
 
 export interface BeamCaseResult {
@@ -89,15 +90,15 @@ export function calculateBeamCase(input: BeamCaseInput): BeamCaseResult {
 
     if (support === 'simple-supported') {
       reactions = [
-        { label: '左支点反力 RA', value_kN: loadValue / 2 },
-        { label: '右支点反力 RB', value_kN: loadValue / 2 },
+        { label: '左支点反力 RA', value: loadValue / 2, unit: 'kN' },
+        { label: '右支点反力 RB', value: loadValue / 2, unit: 'kN' },
       ];
       maxMomentNmm = (P * L) / 4;
       maxDeflectionMm = (P * L ** 3) / (48 * E_MPa * I_mm4);
     } else {
       reactions = [
-        { label: '固定端反力 V', value_kN: loadValue },
-        { label: '固定端モーメント M', value_kN: (loadValue * L) / 1000 },
+        { label: '固定端反力 V', value: loadValue, unit: 'kN' },
+        { label: '固定端モーメント M', value: (loadValue * L) / 1000, unit: 'kN·m' },
       ];
       maxMomentNmm = P * L;
       maxDeflectionMm = (P * L ** 3) / (3 * E_MPa * I_mm4);
@@ -110,16 +111,16 @@ export function calculateBeamCase(input: BeamCaseInput): BeamCaseResult {
     if (support === 'simple-supported') {
       const totalLoadKN = (w * L) / 1000;
       reactions = [
-        { label: '左支点反力 RA', value_kN: totalLoadKN / 2 },
-        { label: '右支点反力 RB', value_kN: totalLoadKN / 2 },
+        { label: '左支点反力 RA', value: totalLoadKN / 2, unit: 'kN' },
+        { label: '右支点反力 RB', value: totalLoadKN / 2, unit: 'kN' },
       ];
       maxMomentNmm = (w * L ** 2) / 8;
       maxDeflectionMm = (5 * w * L ** 4) / (384 * E_MPa * I_mm4);
     } else {
       const totalLoadKN = (w * L) / 1000;
       reactions = [
-        { label: '固定端反力 V', value_kN: totalLoadKN },
-        { label: '固定端モーメント M', value_kN: (w * L ** 2) / 1_000_000 },
+        { label: '固定端反力 V', value: totalLoadKN, unit: 'kN' },
+        { label: '固定端モーメント M', value: (w * L ** 2) / 1_000_000, unit: 'kN·m' },
       ];
       maxMomentNmm = (w * L ** 2) / 2;
       maxDeflectionMm = (w * L ** 4) / (8 * E_MPa * I_mm4);
@@ -180,7 +181,7 @@ export function buildBeamCaseFormulaSteps(input: BeamCaseInput, result: BeamCase
   steps.push(
     {
       label: '反力',
-      expr: result.reactions.map((reaction) => `${reaction.label} = ${formatNumber(reaction.value_kN, 3)} kN`).join('\n'),
+      expr: result.reactions.map((reaction) => `${reaction.label} = ${formatNumber(reaction.value, 3)} ${reaction.unit}`).join('\n'),
     },
     {
       label: '最大曲げモーメント',
