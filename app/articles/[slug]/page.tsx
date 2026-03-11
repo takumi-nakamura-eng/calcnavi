@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type React from 'react';
+import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import ArticleViewTracker from '@/app/components/ArticleViewTracker';
 import ArticleEngagementTracker from '@/app/components/ArticleEngagementTracker';
@@ -9,6 +10,7 @@ import CardDiagram from '@/app/components/CardDiagram';
 import Diagram from '@/app/components/Diagram';
 import MdxOutboundLink from '@/app/components/MdxOutboundLink';
 import Quote from '@/app/components/mdx/Quote';
+import ResponsiveTable from '@/app/components/ResponsiveTable';
 import RelatedArticles from '@/app/components/RelatedArticles';
 import RelatedTools from '@/app/components/RelatedTools';
 import AdSenseBlock from '@/app/components/AdSenseBlock';
@@ -92,8 +94,8 @@ export default async function ArticleDetailPage({
     inLanguage: 'ja',
     mainEntityOfPage: `${SITE_URL}${article.meta.href}`,
     author: {
-      '@type': 'Organization',
-      name: SITE_NAME,
+      '@type': 'Person',
+      name: article.meta.author,
     },
     publisher: {
       '@type': 'Organization',
@@ -205,8 +207,32 @@ export default async function ArticleDetailPage({
             Quote,
             CardDiagram,
             Diagram,
+            ResponsiveTable,
           }}
         />
+        <div className="article-tags" aria-label="記事タグ">
+          {article.meta.tags.map((tag) => (
+            <Link
+              key={`${article.meta.slug}-${tag}`}
+              href={`/tags/${encodeURIComponent(tag)}`}
+              className="article-tag-chip"
+            >
+              {tag}
+            </Link>
+          ))}
+        </div>
+        <section className="article-author-card" aria-labelledby="article-author-heading">
+          <h2 id="article-author-heading">著者について</h2>
+          <p>
+            著者: <Link href="/about">{article.meta.author}</Link>
+          </p>
+          {article.meta.authorBio ? <p>{article.meta.authorBio}</p> : null}
+          {article.meta.aiDisclosure ? (
+            <p className="article-ai-disclosure">
+              このドラフト作成にはAIが利用されました: {article.meta.aiDisclosure}
+            </p>
+          ) : null}
+        </section>
       </article>
 
       <section className="article-sources">
