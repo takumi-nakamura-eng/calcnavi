@@ -34,6 +34,11 @@ function fmt(value: number | undefined | null, digits = 3): string {
   return value.toLocaleString('ja-JP', { maximumFractionDigits: digits });
 }
 
+function toCsvCell(value: string): string {
+  const escaped = value.replace(/"/g, '""');
+  return /[",\n]/.test(escaped) ? `"${escaped}"` : escaped;
+}
+
 export default function SectionComparisonCalculator() {
   const [cards, setCards] = useState<CardState[]>([createCard('H'), createCard('rect-tube')]);
   const [purpose, setPurpose] = useState('');
@@ -93,7 +98,7 @@ export default function SectionComparisonCalculator() {
 
   function handleCsvExport() {
     if (!committed) return;
-    const rows = [
+    const rows: string[][] = [
       ['形状', 'Ix(mm4)', 'Zx(mm3)', 'A(mm2)', '重量(kg/m)', 'Z/A'],
       ...committed.rows.map((row) => [
         row.shapeLabel,
@@ -104,7 +109,7 @@ export default function SectionComparisonCalculator() {
         fmt(row.efficiency_Z_over_A, 3),
       ]),
     ];
-    const csv = rows.map((row) => row.join(',')).join('\n');
+    const csv = rows.map((row) => row.map(toCsvCell).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');

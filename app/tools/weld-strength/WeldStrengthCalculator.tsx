@@ -32,7 +32,10 @@ export default function WeldStrengthCalculator() {
   const [weldCount, setWeldCount] = useState('2');
   const [purpose, setPurpose] = useState('');
   const [lastEntry, setLastEntry] = useState<EngHistoryEntry | null>(null);
-  const [committed, setCommitted] = useState<ReturnType<typeof calculateWeldStrength> | null>(null);
+  const [committed, setCommitted] = useState<{
+    mode: WeldStrengthMode;
+    result: ReturnType<typeof calculateWeldStrength>;
+  } | null>(null);
 
   const parsed = useMemo(
     () => ({
@@ -92,7 +95,7 @@ export default function WeldStrengthCalculator() {
       },
       formulaSteps: result.formulaSteps,
     });
-    setCommitted(result);
+    setCommitted({ mode: parsed.mode, result });
     setLastEntry(entry);
     trackToolCalculate({ toolId: 'weld-strength', category: '溶接' });
   }
@@ -180,25 +183,25 @@ export default function WeldStrengthCalculator() {
             <div className="beam-result-table-wrap">
               <table className="beam-result-table">
                 <tbody>
-                  <ResultRow label="有効のど厚 t" value={`${fmt(committed.throatThickness_mm, 3)} mm`} />
-                  <ResultRow label="断面積" value={`${fmt(committed.effectiveArea_mm2, 2)} mm²`} />
+                  <ResultRow label="有効のど厚 t" value={`${fmt(committed.result.throatThickness_mm, 3)} mm`} />
+                  <ResultRow label="断面積" value={`${fmt(committed.result.effectiveArea_mm2, 2)} mm²`} />
                   <ResultRow
-                    label={mode === 'required-length' ? '必要溶接長さ' : '許容荷重'}
+                    label={committed.mode === 'required-length' ? '必要溶接長さ' : '許容荷重'}
                     value={
-                      mode === 'required-length'
-                        ? `${fmt(committed.requiredLength_mm, 2)} mm`
-                        : `${fmt(committed.allowableLoad_kN, 3)} kN`
+                      committed.mode === 'required-length'
+                        ? `${fmt(committed.result.requiredLength_mm, 2)} mm`
+                        : `${fmt(committed.result.allowableLoad_kN, 3)} kN`
                     }
                   />
-                  <ResultRow label="実効応力" value={`${fmt(committed.actualStress_MPa, 2)} MPa`} />
-                  <ResultRow label="安全率" value={fmt(committed.safetyFactor, 3)} />
+                  <ResultRow label="実効応力" value={`${fmt(committed.result.actualStress_MPa, 2)} MPa`} />
+                  <ResultRow label="安全率" value={fmt(committed.result.safetyFactor, 3)} />
                 </tbody>
               </table>
             </div>
           </div>
           <div className="beam-section">
             <h2 className="beam-section-title">計算式</h2>
-            {committed.formulaSteps.map((step) => (
+            {committed.result.formulaSteps.map((step) => (
               <div key={step.label} className="formula-block">
                 <p className="formula-block__label">{step.label}</p>
                 <pre className="formula-block__expr">{step.expr}</pre>
