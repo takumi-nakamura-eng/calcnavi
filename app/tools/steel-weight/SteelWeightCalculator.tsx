@@ -16,6 +16,7 @@ import {
 import { trackToolCalculate } from '@/lib/analytics/events';
 import { printEngReport } from '@/lib/printReport';
 import { DENSITY_PRESETS, resolveDensity } from '@/lib/materialPresets';
+import AdSenseBlock from '@/app/components/AdSenseBlock';
 import ToolWorkbenchHeader from '@/app/components/ToolWorkbenchHeader';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -533,6 +534,13 @@ export default function SteelWeightCalculator() {
           <span className="sw-total-label">総重量</span>
           <span className="sw-total-value">{fmtNum(totalW, 2)} <span className="sw-total-unit">kg</span></span>
         </div>
+      )}
+      {items.length > 0 && (
+        <AdSenseBlock
+          slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOOL}
+          className="tool-ad tool-ad--inline"
+          pageType="tool"
+        />
       )}
         </div>
       </section>

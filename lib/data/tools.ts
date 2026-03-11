@@ -3,6 +3,8 @@ export interface ToolItem {
   title: string;
   desc: string;
   href: string;
+  publishedAt: string;
+  updatedAt: string;
   available: boolean;
   category: string;
   keywords: string[];
@@ -16,6 +18,8 @@ export const TOOLS: ToolItem[] = [
     title: 'ボルト長さ計算',
     desc: 'ナット・座金の組み合わせから必要なボルト長さと推奨購入長さを計算します。',
     href: '/tools/bolt-length',
+    publishedAt: '2026-03-07',
+    updatedAt: '2026-03-11',
     available: true,
     category: 'ねじ・締結',
     keywords: ['ボルト', 'ナット', '座金', 'ピッチ', '3山'],
@@ -34,6 +38,8 @@ export const TOOLS: ToolItem[] = [
     title: '単純梁（単純支持）計算',
     desc: '曲げ応力・最大たわみを計算し OK/NG 判定。中央集中荷重・等分布荷重に対応。',
     href: '/tools/beams/simple-supported',
+    publishedAt: '2026-03-01',
+    updatedAt: '2026-03-11',
     available: true,
     category: '梁・断面',
     keywords: ['単純梁', 'たわみ', '曲げ応力', '断面係数', '断面二次モーメント'],
@@ -54,6 +60,8 @@ export const TOOLS: ToolItem[] = [
     title: '断面性能計算',
     desc: 'H形鋼・角形鋼管・丸形鋼管など6断面形状の断面二次モーメント・断面係数・断面積・重量を計算します。',
     href: '/tools/section-properties',
+    publishedAt: '2026-03-01',
+    updatedAt: '2026-03-11',
     available: true,
     category: '梁・断面',
     keywords: ['断面二次モーメント', '断面係数', '断面積', '重量', 'H形鋼'],
@@ -74,6 +82,8 @@ export const TOOLS: ToolItem[] = [
     title: '片持ち梁（カンチレバー）計算',
     desc: '固定端・自由端の片持ち梁に対して、集中荷重・等分布荷重の曲げ応力・たわみを計算します。',
     href: '/tools/beams/cantilever',
+    publishedAt: '2026-03-04',
+    updatedAt: '2026-03-11',
     available: true,
     category: '梁・断面',
     keywords: ['片持ち梁', 'カンチレバー', 'たわみ', '曲げ応力', '固定端'],
@@ -91,6 +101,8 @@ export const TOOLS: ToolItem[] = [
     title: '鋼材重量計算',
     desc: '平板・丸棒・角棒・丸パイプ・角パイプの重量を計算し、明細テーブルで合計重量を管理します。',
     href: '/tools/steel-weight',
+    publishedAt: '2026-03-04',
+    updatedAt: '2026-03-11',
     available: true,
     category: '材料・重量',
     keywords: ['鋼材', '重量', '自重', '密度', '材料拾い', 'kg'],
@@ -107,6 +119,8 @@ export const TOOLS: ToolItem[] = [
     title: 'ボルト引張・せん断耐力計算',
     desc: '締結用ボルトの許容引張耐力・許容せん断耐力を即時計算。強度区分4.8/8.8/10.9、M6〜M24対応。',
     href: '/tools/bolt-strength',
+    publishedAt: '2026-03-04',
+    updatedAt: '2026-03-11',
     available: true,
     category: 'ねじ・締結',
     keywords: ['ボルト', '引張耐力', 'せん断耐力', '強度区分', '相互作用'],
@@ -125,6 +139,8 @@ export const TOOLS: ToolItem[] = [
     title: 'アンカーボルト強度計算',
     desc: 'アンカーボルトの引張・せん断強度を試算します。',
     href: '#',
+    publishedAt: '2026-03-11',
+    updatedAt: '2026-03-11',
     available: false,
     category: 'ねじ・締結',
     keywords: ['アンカーボルト', '引張強度', 'せん断強度'],
@@ -140,6 +156,8 @@ export const TOOLS: ToolItem[] = [
     title: '単位換算ツール',
     desc: 'mm↔inch、N↔kgf など建設・機械系でよく使う単位を変換します。',
     href: '#',
+    publishedAt: '2026-03-11',
+    updatedAt: '2026-03-11',
     available: false,
     category: '基礎計算',
     keywords: ['単位換算', 'mm', 'inch', 'N', 'kgf'],
@@ -154,4 +172,8 @@ export function getToolById(id: string): ToolItem | undefined {
 
 export function getToolByHref(href: string): ToolItem | undefined {
   return TOOLS.find((tool) => tool.href === href);
+}
+
+export function getAvailableTools(): ToolItem[] {
+  return TOOLS.filter((tool) => tool.available);
 }
