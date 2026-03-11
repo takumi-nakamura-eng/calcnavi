@@ -31,6 +31,9 @@ export interface ArticleMeta {
   updatedAt: string;
   category: string;
   tags: string[];
+  author: string;
+  authorBio?: string;
+  aiDisclosure?: string;
   toolRefs: string[];
   diagramKey: string;
   faq: ArticleFaqItem[];
@@ -53,6 +56,9 @@ interface ParsedFrontmatter {
   updatedAt: string;
   category: string;
   tags: string[];
+  author: string;
+  authorBio?: string;
+  aiDisclosure?: string;
   toolRefs: string[];
   diagramKey: string;
   faq: ArticleFaqItem[];
@@ -61,13 +67,8 @@ interface ParsedFrontmatter {
   heroDiagram?: boolean;
 }
 
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+function serializeForJsx(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
 }
 
 function transformMarkdownTables(source: string): string {
@@ -111,21 +112,11 @@ function transformMarkdownTables(source: string): string {
           i += 1;
         }
 
-        out.push('<table className="article-table">');
-        out.push('<thead><tr>');
-        for (const cell of headerCells) {
-          out.push(`<th>${escapeHtml(cell)}</th>`);
-        }
-        out.push('</tr></thead>');
-        out.push('<tbody>');
-        for (const row of bodyRows) {
-          out.push('<tr>');
-          for (const cell of row) {
-            out.push(`<td>${escapeHtml(cell)}</td>`);
-          }
-          out.push('</tr>');
-        }
-        out.push('</tbody></table>');
+        out.push(
+          `<ResponsiveTable headers={${serializeForJsx(headerCells)}} rows={${serializeForJsx(
+            bodyRows,
+          )}} />`,
+        );
         continue;
       }
     }
@@ -325,6 +316,9 @@ function parseFrontmatter(source: string): { data: ParsedFrontmatter; body: stri
       updatedAt: String(record.updatedAt ?? ''),
       category: String(record.category ?? ''),
       tags: Array.isArray(record.tags) ? (record.tags as string[]) : [],
+      author: String(record.author ?? ''),
+      authorBio: record.authorBio ? String(record.authorBio) : undefined,
+      aiDisclosure: record.aiDisclosure ? String(record.aiDisclosure) : undefined,
       toolRefs: Array.isArray(record.toolRefs) ? (record.toolRefs as string[]) : [],
       diagramKey: String(record.diagramKey ?? ''),
       faq,
@@ -372,6 +366,7 @@ function validateArticleContent(slug: string, meta: ParsedFrontmatter, body: str
   if (!meta.publishedAt.trim()) missing.push('publishedAt');
   if (!meta.updatedAt.trim()) missing.push('updatedAt');
   if (!meta.category.trim()) missing.push('category');
+  if (!meta.author.trim()) missing.push('author');
   if (!meta.diagramKey.trim()) missing.push('diagramKey');
   if (meta.toolRefs.length === 0) missing.push('toolRefs');
   if (meta.tags.length === 0) missing.push('tags');
@@ -431,7 +426,9 @@ export const getAllArticles = cache(async (): Promise<ArticleMeta[]> => {
   return articles
     .filter((item): item is Article => item !== null)
     .map((article) => article.meta)
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+    .sort((a, b) =>
+      getArticleSortDate(b).localeCompare(getArticleSortDate(a)),
+    );
 });
 
 export const getArticleBySlug = cache(async (slug: string): Promise<Article | null> => {
@@ -477,3 +474,7 @@ export const getArticleComponent = cache(async (slug: string) => {
 
   return evaluated.default;
 });
+
+function getArticleSortDate(article: Pick<ArticleMeta, 'publishedAt' | 'updatedAt'>): string {
+  return article.updatedAt > article.publishedAt ? article.updatedAt : article.publishedAt;
+}
